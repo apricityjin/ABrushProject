@@ -1,0 +1,428 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7324CF672A56978100533EE1 /* Image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF472A56978100533EE1 /* Image.hpp */; };
+		7324CF682A56978100533EE1 /* Path.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF482A56978100533EE1 /* Path.hpp */; };
+		7324CF692A56978100533EE1 /* StrokeTessellator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF492A56978100533EE1 /* StrokeTessellator.hpp */; };
+		7324CF6A2A56978100533EE1 /* APoint.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF4A2A56978100533EE1 /* APoint.hpp */; };
+		7324CF6B2A56978100533EE1 /* RenderData.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF4B2A56978100533EE1 /* RenderData.hpp */; };
+		7324CF6C2A56978100533EE1 /* FillTessellator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF4C2A56978100533EE1 /* FillTessellator.hpp */; };
+		7324CF6D2A56978100533EE1 /* Gradient.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF4D2A56978100533EE1 /* Gradient.hpp */; };
+		7324CF6E2A56978100533EE1 /* Builder.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF4E2A56978100533EE1 /* Builder.hpp */; };
+		7324CF6F2A56978100533EE1 /* Texture.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF4F2A56978100533EE1 /* Texture.hpp */; };
+		7324CF702A56978100533EE1 /* tesselator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF522A56978100533EE1 /* tesselator.h */; };
+		7324CF712A56978100533EE1 /* dict.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF542A56978100533EE1 /* dict.c */; };
+		7324CF722A56978100533EE1 /* tess.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF552A56978100533EE1 /* tess.h */; };
+		7324CF732A56978100533EE1 /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF562A56978100533EE1 /* priorityq.c */; };
+		7324CF742A56978100533EE1 /* bucketalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF572A56978100533EE1 /* bucketalloc.h */; };
+		7324CF752A56978100533EE1 /* sweep.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF582A56978100533EE1 /* sweep.c */; };
+		7324CF762A56978100533EE1 /* geom.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF592A56978100533EE1 /* geom.c */; };
+		7324CF772A56978100533EE1 /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF5A2A56978100533EE1 /* mesh.h */; };
+		7324CF782A56978100533EE1 /* tess.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF5B2A56978100533EE1 /* tess.c */; };
+		7324CF792A56978100533EE1 /* dict.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF5C2A56978100533EE1 /* dict.h */; };
+		7324CF7A2A56978100533EE1 /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF5D2A56978100533EE1 /* priorityq.h */; };
+		7324CF7B2A56978100533EE1 /* sweep.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF5E2A56978100533EE1 /* sweep.h */; };
+		7324CF7C2A56978100533EE1 /* bucketalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF5F2A56978100533EE1 /* bucketalloc.c */; };
+		7324CF7D2A56978100533EE1 /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF602A56978100533EE1 /* mesh.c */; };
+		7324CF7E2A56978100533EE1 /* geom.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF612A56978100533EE1 /* geom.h */; };
+		7324CF7F2A56978100533EE1 /* ABrush.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF622A56978100533EE1 /* ABrush.hpp */; };
+		7324CF802A56978100533EE1 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF642A56978100533EE1 /* stb_image.h */; };
+		7324CF812A56978100533EE1 /* Affine.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF652A56978100533EE1 /* Affine.hpp */; };
+		7324CF822A56978100533EE1 /* Color.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF662A56978100533EE1 /* Color.hpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7324CF392A56975400533EE1 /* libABrush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libABrush.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7324CF472A56978100533EE1 /* Image.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Image.hpp; sourceTree = "<group>"; };
+		7324CF482A56978100533EE1 /* Path.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Path.hpp; sourceTree = "<group>"; };
+		7324CF492A56978100533EE1 /* StrokeTessellator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StrokeTessellator.hpp; sourceTree = "<group>"; };
+		7324CF4A2A56978100533EE1 /* APoint.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = APoint.hpp; sourceTree = "<group>"; };
+		7324CF4B2A56978100533EE1 /* RenderData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RenderData.hpp; sourceTree = "<group>"; };
+		7324CF4C2A56978100533EE1 /* FillTessellator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FillTessellator.hpp; sourceTree = "<group>"; };
+		7324CF4D2A56978100533EE1 /* Gradient.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Gradient.hpp; sourceTree = "<group>"; };
+		7324CF4E2A56978100533EE1 /* Builder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Builder.hpp; sourceTree = "<group>"; };
+		7324CF4F2A56978100533EE1 /* Texture.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
+		7324CF522A56978100533EE1 /* tesselator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tesselator.h; sourceTree = "<group>"; };
+		7324CF542A56978100533EE1 /* dict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dict.c; sourceTree = "<group>"; };
+		7324CF552A56978100533EE1 /* tess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tess.h; sourceTree = "<group>"; };
+		7324CF562A56978100533EE1 /* priorityq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = priorityq.c; sourceTree = "<group>"; };
+		7324CF572A56978100533EE1 /* bucketalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bucketalloc.h; sourceTree = "<group>"; };
+		7324CF582A56978100533EE1 /* sweep.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sweep.c; sourceTree = "<group>"; };
+		7324CF592A56978100533EE1 /* geom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = geom.c; sourceTree = "<group>"; };
+		7324CF5A2A56978100533EE1 /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
+		7324CF5B2A56978100533EE1 /* tess.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tess.c; sourceTree = "<group>"; };
+		7324CF5C2A56978100533EE1 /* dict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dict.h; sourceTree = "<group>"; };
+		7324CF5D2A56978100533EE1 /* priorityq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = priorityq.h; sourceTree = "<group>"; };
+		7324CF5E2A56978100533EE1 /* sweep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sweep.h; sourceTree = "<group>"; };
+		7324CF5F2A56978100533EE1 /* bucketalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bucketalloc.c; sourceTree = "<group>"; };
+		7324CF602A56978100533EE1 /* mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mesh.c; sourceTree = "<group>"; };
+		7324CF612A56978100533EE1 /* geom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geom.h; sourceTree = "<group>"; };
+		7324CF622A56978100533EE1 /* ABrush.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ABrush.hpp; sourceTree = "<group>"; };
+		7324CF642A56978100533EE1 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		7324CF652A56978100533EE1 /* Affine.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Affine.hpp; sourceTree = "<group>"; };
+		7324CF662A56978100533EE1 /* Color.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Color.hpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7324CF372A56975400533EE1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7324CF302A56975400533EE1 = {
+			isa = PBXGroup;
+			children = (
+				7324CF3B2A56975400533EE1 /* ABrush */,
+				7324CF3A2A56975400533EE1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7324CF3A2A56975400533EE1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF392A56975400533EE1 /* libABrush.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7324CF3B2A56975400533EE1 /* ABrush */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF632A56978100533EE1 /* stb */,
+				7324CF502A56978100533EE1 /* libtess2 */,
+				7324CF622A56978100533EE1 /* ABrush.hpp */,
+				7324CF652A56978100533EE1 /* Affine.hpp */,
+				7324CF4A2A56978100533EE1 /* APoint.hpp */,
+				7324CF4E2A56978100533EE1 /* Builder.hpp */,
+				7324CF662A56978100533EE1 /* Color.hpp */,
+				7324CF4C2A56978100533EE1 /* FillTessellator.hpp */,
+				7324CF4D2A56978100533EE1 /* Gradient.hpp */,
+				7324CF472A56978100533EE1 /* Image.hpp */,
+				7324CF482A56978100533EE1 /* Path.hpp */,
+				7324CF4B2A56978100533EE1 /* RenderData.hpp */,
+				7324CF492A56978100533EE1 /* StrokeTessellator.hpp */,
+				7324CF4F2A56978100533EE1 /* Texture.hpp */,
+			);
+			path = ABrush;
+			sourceTree = "<group>";
+		};
+		7324CF502A56978100533EE1 /* libtess2 */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF512A56978100533EE1 /* Include */,
+				7324CF532A56978100533EE1 /* Source */,
+			);
+			path = libtess2;
+			sourceTree = "<group>";
+		};
+		7324CF512A56978100533EE1 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF522A56978100533EE1 /* tesselator.h */,
+			);
+			path = Include;
+			sourceTree = "<group>";
+		};
+		7324CF532A56978100533EE1 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF542A56978100533EE1 /* dict.c */,
+				7324CF552A56978100533EE1 /* tess.h */,
+				7324CF562A56978100533EE1 /* priorityq.c */,
+				7324CF572A56978100533EE1 /* bucketalloc.h */,
+				7324CF582A56978100533EE1 /* sweep.c */,
+				7324CF592A56978100533EE1 /* geom.c */,
+				7324CF5A2A56978100533EE1 /* mesh.h */,
+				7324CF5B2A56978100533EE1 /* tess.c */,
+				7324CF5C2A56978100533EE1 /* dict.h */,
+				7324CF5D2A56978100533EE1 /* priorityq.h */,
+				7324CF5E2A56978100533EE1 /* sweep.h */,
+				7324CF5F2A56978100533EE1 /* bucketalloc.c */,
+				7324CF602A56978100533EE1 /* mesh.c */,
+				7324CF612A56978100533EE1 /* geom.h */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		7324CF632A56978100533EE1 /* stb */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF642A56978100533EE1 /* stb_image.h */,
+			);
+			path = stb;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7324CF352A56975400533EE1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7324CF772A56978100533EE1 /* mesh.h in Headers */,
+				7324CF812A56978100533EE1 /* Affine.hpp in Headers */,
+				7324CF7B2A56978100533EE1 /* sweep.h in Headers */,
+				7324CF7A2A56978100533EE1 /* priorityq.h in Headers */,
+				7324CF6E2A56978100533EE1 /* Builder.hpp in Headers */,
+				7324CF722A56978100533EE1 /* tess.h in Headers */,
+				7324CF692A56978100533EE1 /* StrokeTessellator.hpp in Headers */,
+				7324CF672A56978100533EE1 /* Image.hpp in Headers */,
+				7324CF7E2A56978100533EE1 /* geom.h in Headers */,
+				7324CF742A56978100533EE1 /* bucketalloc.h in Headers */,
+				7324CF6C2A56978100533EE1 /* FillTessellator.hpp in Headers */,
+				7324CF802A56978100533EE1 /* stb_image.h in Headers */,
+				7324CF702A56978100533EE1 /* tesselator.h in Headers */,
+				7324CF6B2A56978100533EE1 /* RenderData.hpp in Headers */,
+				7324CF682A56978100533EE1 /* Path.hpp in Headers */,
+				7324CF7F2A56978100533EE1 /* ABrush.hpp in Headers */,
+				7324CF6F2A56978100533EE1 /* Texture.hpp in Headers */,
+				7324CF6A2A56978100533EE1 /* APoint.hpp in Headers */,
+				7324CF792A56978100533EE1 /* dict.h in Headers */,
+				7324CF822A56978100533EE1 /* Color.hpp in Headers */,
+				7324CF6D2A56978100533EE1 /* Gradient.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		7324CF382A56975400533EE1 /* ABrush */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7324CF442A56975400533EE1 /* Build configuration list for PBXNativeTarget "ABrush" */;
+			buildPhases = (
+				7324CF352A56975400533EE1 /* Headers */,
+				7324CF362A56975400533EE1 /* Sources */,
+				7324CF372A56975400533EE1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ABrush;
+			productName = ABrush;
+			productReference = 7324CF392A56975400533EE1 /* libABrush.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7324CF312A56975400533EE1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					7324CF382A56975400533EE1 = {
+						CreatedOnToolsVersion = 14.0;
+					};
+				};
+			};
+			buildConfigurationList = 7324CF342A56975400533EE1 /* Build configuration list for PBXProject "ABrush" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 7324CF302A56975400533EE1;
+			productRefGroup = 7324CF3A2A56975400533EE1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7324CF382A56975400533EE1 /* ABrush */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7324CF362A56975400533EE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7324CF782A56978100533EE1 /* tess.c in Sources */,
+				7324CF7C2A56978100533EE1 /* bucketalloc.c in Sources */,
+				7324CF752A56978100533EE1 /* sweep.c in Sources */,
+				7324CF7D2A56978100533EE1 /* mesh.c in Sources */,
+				7324CF712A56978100533EE1 /* dict.c in Sources */,
+				7324CF732A56978100533EE1 /* priorityq.c in Sources */,
+				7324CF762A56978100533EE1 /* geom.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7324CF422A56975400533EE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		7324CF432A56975400533EE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		7324CF452A56975400533EE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 789LJF7679;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		7324CF462A56975400533EE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 789LJF7679;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7324CF342A56975400533EE1 /* Build configuration list for PBXProject "ABrush" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7324CF422A56975400533EE1 /* Debug */,
+				7324CF432A56975400533EE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7324CF442A56975400533EE1 /* Build configuration list for PBXNativeTarget "ABrush" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7324CF452A56975400533EE1 /* Debug */,
+				7324CF462A56975400533EE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7324CF312A56975400533EE1 /* Project object */;
+}

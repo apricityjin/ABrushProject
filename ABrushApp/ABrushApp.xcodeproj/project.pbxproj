@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7324CF892A569A3000533EE1 /* AShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF882A569A3000533EE1 /* AShaders.metal */; };
 		9552C4A02A37366700C61EF1 /* VlogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4962A37366700C61EF1 /* VlogTableViewCell.m */; };
 		9552C4A12A37366700C61EF1 /* DMShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4992A37366700C61EF1 /* DMShaders.metal */; };
 		9552C4A22A37366700C61EF1 /* VlogModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C49A2A37366700C61EF1 /* VlogModel.m */; };
@@ -48,10 +49,11 @@
 		95D101CA2A330B6200BBA838 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95D101C92A330B6200BBA838 /* Assets.xcassets */; };
 		95D101CD2A330B6200BBA838 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D101CB2A330B6200BBA838 /* LaunchScreen.storyboard */; };
 		95D101D02A330B6200BBA838 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D101CF2A330B6200BBA838 /* main.m */; };
-		95D101D82A330B9D00BBA838 /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D101D72A330B9D00BBA838 /* TestView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7324CF872A569A1D00533EE1 /* AShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AShaderTypes.h; sourceTree = "<group>"; };
+		7324CF882A569A3000533EE1 /* AShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AShaders.metal; sourceTree = "<group>"; };
 		9552C4902A3735B900C61EF1 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		9552C4962A37366700C61EF1 /* VlogTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VlogTableViewCell.m; sourceTree = "<group>"; };
 		9552C4972A37366700C61EF1 /* VlogsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VlogsViewController.h; sourceTree = "<group>"; };
@@ -129,8 +131,6 @@
 		95D101CC2A330B6200BBA838 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		95D101CE2A330B6200BBA838 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95D101CF2A330B6200BBA838 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		95D101D62A330B9D00BBA838 /* TestView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
-		95D101D72A330B9D00BBA838 /* TestView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,10 +154,10 @@
 		9552C4872A3732BC00C61EF1 /* ABrushPage */ = {
 			isa = PBXGroup;
 			children = (
+				7324CF872A569A1D00533EE1 /* AShaderTypes.h */,
+				7324CF882A569A3000533EE1 /* AShaders.metal */,
 				95D101C32A330B6100BBA838 /* ABrushViewController.h */,
 				95D101C42A330B6100BBA838 /* ABrushViewController.mm */,
-				95D101D62A330B9D00BBA838 /* TestView.h */,
-				95D101D72A330B9D00BBA838 /* TestView.m */,
 			);
 			path = ABrushPage;
 			sourceTree = "<group>";
@@ -177,11 +177,11 @@
 				9552C4962A37366700C61EF1 /* VlogTableViewCell.m */,
 				9552C4972A37366700C61EF1 /* VlogsViewController.h */,
 				9552C4982A37366700C61EF1 /* VlogDetailsViewController.h */,
-				9552C4992A37366700C61EF1 /* DMShaders.metal */,
+				9552C49D2A37366700C61EF1 /* VlogDetailsViewController.m */,
 				9552C49A2A37366700C61EF1 /* VlogModel.m */,
 				9552C49B2A37366700C61EF1 /* VlogTableViewCell.h */,
 				9552C49C2A37366700C61EF1 /* DMShaderTypes.h */,
-				9552C49D2A37366700C61EF1 /* VlogDetailsViewController.m */,
+				9552C4992A37366700C61EF1 /* DMShaders.metal */,
 				9552C49E2A37366700C61EF1 /* VlogsViewController.m */,
 				9552C49F2A37366700C61EF1 /* VlogModel.h */,
 			);
@@ -448,6 +448,7 @@
 				9552C4DB2A37375700C61EF1 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				9552C4DD2A37375700C61EF1 /* MASCompositeConstraint.m in Sources */,
 				9552C4A32A37366700C61EF1 /* VlogDetailsViewController.m in Sources */,
+				7324CF892A569A3000533EE1 /* AShaders.metal in Sources */,
 				9552C50B2A3738A100C61EF1 /* ImageDownloader.m in Sources */,
 				9552C4DC2A37375700C61EF1 /* ViewController+MASAdditions.m in Sources */,
 				9552C4E42A37375700C61EF1 /* MASViewAttribute.m in Sources */,
@@ -456,7 +457,6 @@
 				9552C4A42A37366700C61EF1 /* VlogsViewController.m in Sources */,
 				9552C5042A3738A100C61EF1 /* ShowImagesCollectionViewCell.m in Sources */,
 				9552C4DE2A37375700C61EF1 /* MASConstraintMaker.m in Sources */,
-				95D101D82A330B9D00BBA838 /* TestView.m in Sources */,
 				9552C4DF2A37375700C61EF1 /* MASLayoutConstraint.m in Sources */,
 				9552C5052A3738A100C61EF1 /* ImageBrowseViewController.m in Sources */,
 				9552C50A2A3738A100C61EF1 /* ImagesTableViewController.m in Sources */,
@@ -604,12 +604,13 @@
 				DEVELOPMENT_TEAM = 789LJF7679;
 				GCC_PREFIX_HEADER = $SRCROOT/ABrushApp/PrefixHeader.pch;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = /Users/ediothjin/Desktop/GitHub/ABrushProject/ABrush/ABrush;
 				INFOPLIST_FILE = ABrushApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -623,7 +624,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -638,12 +639,13 @@
 				DEVELOPMENT_TEAM = 789LJF7679;
 				GCC_PREFIX_HEADER = $SRCROOT/ABrushApp/PrefixHeader.pch;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = /Users/ediothjin/Desktop/GitHub/ABrushProject/ABrush/ABrush;
 				INFOPLIST_FILE = ABrushApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -657,7 +659,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
