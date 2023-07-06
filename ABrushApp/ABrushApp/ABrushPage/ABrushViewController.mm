@@ -68,18 +68,20 @@ using namespace ABrush;
 
 - (void)setup
 {
-//    APoint p0 = APoint(100.0, 50.0);
-    APoint p0 = APoint(0.0, 0.0);
+    APoint p0 = APoint(100.0, 50.0);
+//    APoint p0 = APoint(0.0, 0.0);
     APoint p1 = APoint(60.0, 300.0);
     APoint p2 = APoint(200.0, 150.0);
     APoint p3 = APoint(300.0, 400.0);
-    APoint p4 = APoint(200.0, 400.0);
+    
+    APoint p4 = APoint(0.0, 500.0);
     APoint p5 = APoint(-150.0, 300.0);
-//    APoint p6 = APoint();
+    APoint p6 = APoint(-150.0, -300.0);
+    APoint p7 = APoint(0.0, -400.0);
     Path path = Path();
     path
-        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p4)
-        .moveTo(p5).curveTo(p2, p4, p3).close();
+        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p3)
+        .moveTo(p4).curveTo(p5, p6, p7).close();
     
     RenderData data = RenderData();
     Flatten *flattens = path.flatten();

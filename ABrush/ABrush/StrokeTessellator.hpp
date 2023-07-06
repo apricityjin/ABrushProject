@@ -36,7 +36,7 @@ public:
     {
         using namespace std;
         size_t size = flattens[0].size;
-        uint16_t index_offset = 0; // 为了只用传递一次 verdices，这里在绘制多个线段的时候需要添加上offset
+        uint index_offset = 0; // 为了只用传递一次 verdices，这里在绘制多个线段的时候需要添加上offset
         for (size_t pathIdx = 0; pathIdx < size; ++pathIdx) {
             Flatten &f = flattens[pathIdx];
             vector<APoint> &points = f.points;
@@ -251,7 +251,7 @@ public:
                     start = points.at(vertexIdx);
                     end = points.at(vertexIdx + 1);
                     tangent = (end - start).normalized();
-//                    APoint &p2 = n_left = APoint(-tangent.y, tangent.x) * line_width;
+                    APoint &p2 = n_left = APoint(-tangent.y, tangent.x) * line_width; // 这句代码虽然没使用但是注释之后就报错
                     APoint &p3 = n_right = APoint(tangent.y, -tangent.x) * line_width;
                     float H = sqrt((p1.x - p3.x) * (p1.x - p3.x) + (p1.y - p3.y) * (p1.y - p3.y));
                     float cos_angle = (line_width * line_width * 2 - H * H) / (2 * line_width * line_width);
@@ -378,3 +378,4 @@ public:
 }
 
 #endif //ABRUSH_STROKETESSELLATOR_H
+
