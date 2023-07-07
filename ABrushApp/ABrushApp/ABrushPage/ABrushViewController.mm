@@ -85,11 +85,14 @@ using namespace ABrush;
     
     RenderData data = RenderData();
     Flatten *flattens = path.flatten();
-    StrokeTessellator tessellator = StrokeTessellator();
-    tessellator.line_join_style = StrokeTessellator::LineJoin::LineJoinRound;
-    tessellator.line_width = 20.0;
-    tessellator.line_cap_style = StrokeTessellator::LineCap::LineCapRound;
-    tessellator.stroke(flattens, data);
+    FillTessellator tessellator = FillTessellator();
+    tessellator.fill(flattens, data);
+    
+//    StrokeTessellator tessellator = StrokeTessellator();
+//    tessellator.line_join_style = StrokeTessellator::LineJoin::LineJoinRound;
+//    tessellator.line_width = 20.0;
+//    tessellator.line_cap_style = StrokeTessellator::LineCap::LineCapRound;
+//    tessellator.stroke(flattens, data);
     
     //
     _vertexCount = data.vertices.size();
@@ -136,6 +139,8 @@ using namespace ABrush;
         [renderEncoder setVertexBuffer:_vertices
                                 offset:0
                                atIndex:AVertexInputIndexVertices];
+        
+        
         
         [renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
                                   indexCount:_indexCount
