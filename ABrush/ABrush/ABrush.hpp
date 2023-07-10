@@ -5,8 +5,8 @@
 //  Created by Apricity on 2023/7/6.
 //
 
-#ifndef ABrush_
-#define ABrush_
+#ifndef ABRUSH_HPP
+#define ABRUSH_HPP
 
 #include "APoint.hpp"
 #include "Affine.hpp"

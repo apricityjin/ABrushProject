@@ -2,8 +2,8 @@
 // Created by apricity on 2023/6/13.
 //
 
-#ifndef ABRUSH_FILLTESSELLATOR_H
-#define ABRUSH_FILLTESSELLATOR_H
+#ifndef FILLTESSELLATOR_HPP
+#define FILLTESSELLATOR_HPP
 
 #include <iostream>
 #include "Path.hpp"

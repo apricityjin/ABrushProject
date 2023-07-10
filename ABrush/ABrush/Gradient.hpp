@@ -2,8 +2,8 @@
 // Created by apricity on 2023/6/15.
 //
 
-#ifndef ABRUSH_GRADIENT_H
-#define ABRUSH_GRADIENT_H
+#ifndef GRADIENT_HPP
+#define GRADIENT_HPP
 
 #include <vector>
 #include <stdexcept>
@@ -12,10 +12,8 @@
 
 namespace ABrush
 {
-
-    class Gradient
+    struct Gradient
     {
-    public:
         Gradient(const std::vector<Color> &colors, const std::vector<float> &locations)
                 : colors(colors), locations(locations)
         {}
@@ -47,39 +45,35 @@ namespace ABrush
             float t = locations[j];
             locations[j] = locations[i];
             locations[i] = t;
-            uint32_t tc = colors[j].rgba;
+            uint tc = colors[j].rgba;
             colors[j].rgba = colors[i].rgba;
             colors[i].rgba = tc;
         }
 
-        /// 大小 1 + size，size在一种颜色的情况下为1，在多个颜色情况下为255。 size * percent 直接取内存中储存的颜色。
-        uint32_t *buildLut()
+        /// 大小 size，size在一种颜色的情况下为1，在多个颜色情况下为256。
+        uint *buildLut()
         {
             sort();
             // count = 0 -> 不用渲染，count = 1 -> 只用渲染一种颜色， count >= 2 -> 颜色插值运算
             auto count = std::min(colors.size(), locations.size());
-            uint32_t * buffer = nullptr;
+            uint * buffer = nullptr;
             if (count == 0) {
-                buffer = (uint32_t * )
-                calloc(1, sizeof(uint32_t));
+                buffer = (uint * )
+                calloc(1, sizeof(uint));
                 *buffer = 0;
                 return buffer;
             } else if (count == 1) {
+                size = 1;
                 Color &c = colors[0];
-                buffer = (uint32_t * )
-                calloc(2, sizeof(uint32_t));
-                uint32_t * pointer = buffer;
-                *pointer++ = 1;
-                *pointer++ = c.rgba;
+                buffer = (uint * )calloc(1, sizeof(uint));
+                *buffer = c.rgba;
                 return buffer;
             }
             // count >= 2
             // 默认切割255份
-            uint32_t size = 255;
-            buffer = (uint32_t * )
-            calloc(size + 1, sizeof(uint32_t));
-            uint32_t * pointer = buffer;
-            *pointer++ = size;
+            size = 256;
+            buffer = (uint * )calloc(size, sizeof(uint));
+            uint * pointer = buffer;
             int l = 0, r = 1;
             Color leftColor = colors[l];
             Color rightColor = colors[r];
@@ -107,7 +101,7 @@ namespace ABrush
                 float len = rightLocation - leftLocation,
                         rPercent = (curLocation - leftLocation) / len,
                         lPercent = 1 - rPercent;
-                uint32_t res = rgbaInterpolation(leftColor, lPercent, rightColor, rPercent);
+                uint res = rgbaInterpolation(leftColor, lPercent, rightColor, rPercent);
                 *pointer++ = res;
             }
             return buffer;
@@ -117,6 +111,7 @@ namespace ABrush
         std::vector<Color> colors;
         /// 储存坐标 0.0 ~ 1.0
         std::vector<float> locations;
+        uint size;
     };
 
 } // ABrush

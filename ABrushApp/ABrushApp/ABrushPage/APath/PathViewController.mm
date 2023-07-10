@@ -1,17 +1,22 @@
 //
-//  ABrushViewController.m
+//  PathViewController.m
 //  ABrushApp
 //
-//  Created by apricity on 2023/6/9.
+//  Created by Apricity on 2023/7/10.
 //
 
-#import "ABrushViewController.h"
+#import "PathViewController.h"
 #import <MetalKit/MetalKit.h>
 #import "AShaderTypes.h"
-#import "ABrush.hpp"
+
+#ifndef ABRUSH_HPP
+
+#include "ABrush.hpp"
+
+#endif
 using namespace ABrush;
 
-@interface ABrushViewController ()
+@interface PathViewController ()
 <MTKViewDelegate>
 
 @property (nonatomic, strong) MTKView *mtkView;
@@ -22,15 +27,16 @@ using namespace ABrush;
 @property (nonatomic, strong) id<MTLTexture> texture;
 @property (nonatomic, strong) id<MTLBuffer> vertices;
 @property (nonatomic, strong) id<MTLBuffer> indices;
+@property (nonatomic, strong) id<MTLBuffer> vertexPoint; // gradient vertex
 @property (nonatomic, assign) NSUInteger vertexCount;
 @property (nonatomic, assign) NSUInteger vertexBufferLength;
 @property (nonatomic, assign) NSUInteger indexCount;
 @property (nonatomic, assign) NSUInteger indexBufferLength;
+@property (nonatomic, assign) NSUInteger vertexPointBufferLength;
 
 @end
 
-@implementation ABrushViewController
-
+@implementation PathViewController
 
 - (void)viewDidLoad
 {
@@ -74,32 +80,57 @@ using namespace ABrush;
     APoint p2 = APoint(200.0, 150.0);
     APoint p3 = APoint(300.0, 400.0);
     
-    APoint p4 = APoint(0.0, 500.0);
+    APoint p4 = APoint(200.0, 500.0);
     APoint p5 = APoint(-150.0, 300.0);
     APoint p6 = APoint(-150.0, -300.0);
-    APoint p7 = APoint(0.0, -400.0);
+    APoint p7 = APoint(300.0, -400.0);
     Path path = Path();
     path
-        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p3)
+//        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p3);
         .moveTo(p4).curveTo(p5, p6, p7).close();
     
     RenderData data = RenderData();
     Flatten *flattens = path.flatten();
-    FillTessellator tessellator = FillTessellator();
-    tessellator.fill(flattens, data);
+//    FillTessellator tessellator = FillTessellator();
+//    tessellator.fill(flattens, data);
     
-//    StrokeTessellator tessellator = StrokeTessellator();
-//    tessellator.line_join_style = StrokeTessellator::LineJoin::LineJoinRound;
-//    tessellator.line_width = 20.0;
-//    tessellator.line_cap_style = StrokeTessellator::LineCap::LineCapRound;
-//    tessellator.stroke(flattens, data);
+    StrokeTessellator tessellator = StrokeTessellator();
+    tessellator.line_join_style = StrokeTessellator::LineJoin::LineJoinRound;
+    tessellator.line_width = 20.0;
+    tessellator.line_cap_style = StrokeTessellator::LineCap::LineCapRound;
+    tessellator.stroke(flattens, data);
+    
+    std::vector<Color> colors = {
+        {255, 0, 0, 255},
+        {0, 255, 0, 255},
+        {0, 0, 255, 255},
+    };
+    std::vector<float> locations = {
+        0.0,
+        0.5,
+        1.0,
+    };
+    Gradient g = Gradient(colors, locations);
+    Builder b = Builder();
+    b.buildLinearGradient(data, g, p4, p7);
+    
+    _vertexPointBufferLength = 4 * sizeof(float);
+    _vertexPoint = [_mtkView.device newBufferWithBytes:data.vertexPoint
+                                                length:_vertexPointBufferLength
+                                               options:MTLResourceStorageModeShared];
+
+    uint * colorsLut = g.buildLut();
+    MTLTextureDescriptor *textureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:g.size height:1 mipmapped:NO];
+    self.texture = [self.mtkView.device newTextureWithDescriptor:textureDescriptor];
+    MTLRegion region = MTLRegionMake2D(0, 0, g.size, 1);
+    [self.texture replaceRegion:region mipmapLevel:0 withBytes:colorsLut bytesPerRow:g.size * sizeof(uint)];
     
     //
     _vertexCount = data.vertices.size();
     _vertexBufferLength = _vertexCount * sizeof(AVertex);
     _vertices = [_mtkView.device newBufferWithLength:_vertexBufferLength
-                                                 options:MTLResourceStorageModeShared];
-    void *pointer = [_vertices contents];
+                                             options:MTLResourceStorageModeShared];
+    void* pointer = [_vertices contents];
     memcpy(pointer, data.vertices.data(), _vertexBufferLength);
     
     _indexCount = data.indices.size();
@@ -140,7 +171,12 @@ using namespace ABrush;
                                 offset:0
                                atIndex:AVertexInputIndexVertices];
         
+        [renderEncoder setVertexBuffer:_vertexPoint
+                                offset:0
+                               atIndex:AVertexInputIndexVertexPoint];
         
+        [renderEncoder setFragmentTexture:self.texture
+                                  atIndex:0];
         
         [renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
                                   indexCount:_indexCount

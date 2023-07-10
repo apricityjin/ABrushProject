@@ -2,14 +2,15 @@
 // Created by apricity on 2023/6/15.
 //
 
-#ifndef ABRUSH_BUILDER_H
-#define ABRUSH_BUILDER_H
+#ifndef BUILDER_HPP
+#define BUILDER_HPP
 
 #include "Color.hpp"
 #include "Image.hpp"
 #include "FillTessellator.hpp"
 #include "StrokeTessellator.hpp"
 #include "Gradient.hpp"
+#include "RenderData.hpp"
 
 namespace ABrush
 {
@@ -51,11 +52,38 @@ namespace ABrush
 
         /// 线性渐变（一一对应进行颜色插值，颜色和坐标数量不对应就取size较小的那个）
         /// 这里取 start为 A，end为 B，需要计算的点为 P，P在 AB上垂点为 F
-        uint32_t *drawLinearGradient(Gradient &g, APoint &start, APoint &end)
+        /// memory: |type|start| end |
+        ///         | 4B | 8B  | 8B  |
+        void buildLinearGradient(RenderData &data, Gradient &g, APoint &start, APoint &end)
         {
-            uint32_t *gradientBuffer = g.buildLut();
-            uint32_t *gradientColorsBuffer = gradientBuffer + 1; // 指向颜色的内存，idx = 0 的颜色
-            uint32_t size = *gradientBuffer - 1;
+            data.vertexPoint = (float *)calloc(4, sizeof(float));
+            float *pointer = data.vertexPoint;
+            *pointer++ = start.x;
+            *pointer++ = start.y;
+            *pointer++ = end.x;
+            *pointer++ = end.y;
+            /*
+            uint32_t *colorsLut = g.buildLut();
+            uint32_t length = *colorsLut;
+            data.gradientLen = 5 + length;
+            data.gradient = (uint32_t *)calloc(5 + length, sizeof(uint32_t));
+            uint32_t *pointer = data.gradient;
+            *pointer++ = 0;
+//            *pointer++ = start.x;
+//            *pointer++ = start.y;
+//            *pointer++ = end.x;
+//            *pointer++ = end.y;
+            float d[] = {
+                start.x,
+                start.y,
+                end.x,
+                end.y,
+            };
+            memcpy(pointer, &d, 4 * sizeof(uint32_t));
+            pointer += 4;
+            memcpy(pointer, colorsLut, length * sizeof(uint32_t));
+            
+            
             float x1 = start.x, y1 = start.y;
             // 从这里开始，A点坐标为 (0, 0)
             float x2 = end.x - x1, y2 = end.y - y1;
@@ -74,21 +102,38 @@ namespace ABrush
                     } else if (k < 0.0) {
                         k = 0.0;
                     }
-                    uint32_t idx = size * k + 0.5; // 四舍五入
-                    uint32_t rgba = *(gradientColorsBuffer + idx);
-                    *pointer++ = rgba;
+//                    uint32_t idx = size * k + 0.5; // 四舍五入
+//                    uint32_t rgba = *(gradientColorsBuffer + idx);
+//                    *pointer++ = rgba;
                 }
             }
-            free(gradientBuffer);
-            return tex;
+             */
         }
 
         /// 径向渐变（颜色沿由一个中心点向外的半径方向渐变。）
-        uint32_t *drawRadialGradient(Gradient &g, APoint &center, float radius)
+        /// memory: |type|center|radius|
+        ///         | 4B |  8B  |  4B  |
+        void buildRadialGradient(RenderData &data, Gradient &g, APoint &center, float radius)
         {
-            uint32_t *gradientBuffer = g.buildLut();
-            uint32_t *gradientColorsBuffer = gradientBuffer + 1; // 指向颜色的内存，idx = 0 的颜色
-            uint32_t size = *gradientBuffer - 1;
+            /*
+            uint32_t *colorsLut = g.buildLut();
+            uint32_t length = *colorsLut;
+            data.gradientLen = 4 + length;
+            data.gradient = (uint32_t *)calloc(4 + length, sizeof(uint32_t));
+            uint32_t *pointer = data.gradient;
+            *pointer++ = 1;
+//            *pointer++ = center.x;
+//            *pointer++ = center.y;
+//            *pointer++ = radius;
+            float d[] = {
+                center.x,
+                center.y,
+                radius,
+            };
+            memcpy(pointer, &d, 3 * sizeof(uint32_t));
+            pointer += 3;
+            memcpy(pointer, colorsLut, length * sizeof(uint32_t));
+            
             // 用苹果14作为例子，屏幕分辨率：2532 x 1170，逻辑分辨率：844 x 390 -> (y, x)
             uint32_t *tex = (uint32_t *) calloc(844 * 390, sizeof(uint32_t));
             uint32_t *pointer = tex;
@@ -97,12 +142,12 @@ namespace ABrush
                 for (float x = 0.0; x < 390.0; ++x) {
                     float len = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
                     float k = len > radius ? 1.0 : len / radius;
-                    uint32_t idx = size * k + 0.5; // 四舍五入
-                    uint32_t rgba = *(gradientColorsBuffer + idx);
-                    *pointer++ = rgba;
+//                    uint32_t idx = size * k + 0.5; // 四舍五入
+//                    uint32_t rgba = *(gradientColorsBuffer + idx);
+//                    *pointer++ = rgba;
                 }
             }
-            return tex;
+             */
         }
 
         Color fillColor;

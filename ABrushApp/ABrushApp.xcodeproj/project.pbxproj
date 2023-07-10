@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		731C917E2A5BE82700EA2DCB /* PathViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C917D2A5BE82700EA2DCB /* PathViewController.mm */; };
+		731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C91932A5C21D300EA2DCB /* GradientViewController.mm */; };
 		7323D9DB2A57AF42008F86A1 /* libABrush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7323D9DA2A57AF42008F86A1 /* libABrush.a */; };
 		7324CF892A569A3000533EE1 /* AShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF882A569A3000533EE1 /* AShaders.metal */; };
 		9552C4A02A37366700C61EF1 /* VlogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4962A37366700C61EF1 /* VlogTableViewCell.m */; };
@@ -46,13 +48,17 @@
 		9552C50A2A3738A100C61EF1 /* ImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4FC2A3738A000C61EF1 /* ImagesTableViewController.m */; };
 		9552C50B2A3738A100C61EF1 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4FF2A3738A000C61EF1 /* ImageDownloader.m */; };
 		95D101BF2A330B6100BBA838 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D101BE2A330B6100BBA838 /* AppDelegate.m */; };
-		95D101C52A330B6100BBA838 /* ABrushViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 95D101C42A330B6100BBA838 /* ABrushViewController.mm */; };
+		95D101C52A330B6100BBA838 /* ABrushViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D101C42A330B6100BBA838 /* ABrushViewController.m */; };
 		95D101CA2A330B6200BBA838 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95D101C92A330B6200BBA838 /* Assets.xcassets */; };
 		95D101CD2A330B6200BBA838 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D101CB2A330B6200BBA838 /* LaunchScreen.storyboard */; };
 		95D101D02A330B6200BBA838 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D101CF2A330B6200BBA838 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		731C917C2A5BE82700EA2DCB /* PathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathViewController.h; sourceTree = "<group>"; };
+		731C917D2A5BE82700EA2DCB /* PathViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PathViewController.mm; sourceTree = "<group>"; };
+		731C91922A5C21D300EA2DCB /* GradientViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientViewController.h; sourceTree = "<group>"; };
+		731C91932A5C21D300EA2DCB /* GradientViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GradientViewController.mm; sourceTree = "<group>"; };
 		7323D9DA2A57AF42008F86A1 /* libABrush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libABrush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7324CF872A569A1D00533EE1 /* AShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AShaderTypes.h; sourceTree = "<group>"; };
 		7324CF882A569A3000533EE1 /* AShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AShaders.metal; sourceTree = "<group>"; };
@@ -128,7 +134,7 @@
 		95D101BD2A330B6100BBA838 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		95D101BE2A330B6100BBA838 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		95D101C32A330B6100BBA838 /* ABrushViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ABrushViewController.h; sourceTree = "<group>"; };
-		95D101C42A330B6100BBA838 /* ABrushViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ABrushViewController.mm; sourceTree = "<group>"; };
+		95D101C42A330B6100BBA838 /* ABrushViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ABrushViewController.m; sourceTree = "<group>"; };
 		95D101C92A330B6200BBA838 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		95D101CC2A330B6200BBA838 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		95D101CE2A330B6200BBA838 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -147,6 +153,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		731C917B2A5BE7FC00EA2DCB /* APath */ = {
+			isa = PBXGroup;
+			children = (
+				7324CF872A569A1D00533EE1 /* AShaderTypes.h */,
+				7324CF882A569A3000533EE1 /* AShaders.metal */,
+				731C917C2A5BE82700EA2DCB /* PathViewController.h */,
+				731C917D2A5BE82700EA2DCB /* PathViewController.mm */,
+			);
+			path = APath;
+			sourceTree = "<group>";
+		};
+		731C91952A5C21DA00EA2DCB /* Gradient */ = {
+			isa = PBXGroup;
+			children = (
+				731C91922A5C21D300EA2DCB /* GradientViewController.h */,
+				731C91932A5C21D300EA2DCB /* GradientViewController.mm */,
+			);
+			path = Gradient;
+			sourceTree = "<group>";
+		};
 		9552C4562A36B0D800C61EF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,10 +184,10 @@
 		9552C4872A3732BC00C61EF1 /* ABrushPage */ = {
 			isa = PBXGroup;
 			children = (
-				7324CF872A569A1D00533EE1 /* AShaderTypes.h */,
-				7324CF882A569A3000533EE1 /* AShaders.metal */,
+				731C91952A5C21DA00EA2DCB /* Gradient */,
+				731C917B2A5BE7FC00EA2DCB /* APath */,
 				95D101C32A330B6100BBA838 /* ABrushViewController.h */,
-				95D101C42A330B6100BBA838 /* ABrushViewController.mm */,
+				95D101C42A330B6100BBA838 /* ABrushViewController.m */,
 			);
 			path = ABrushPage;
 			sourceTree = "<group>";
@@ -440,7 +466,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95D101C52A330B6100BBA838 /* ABrushViewController.mm in Sources */,
+				731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */,
+				95D101C52A330B6100BBA838 /* ABrushViewController.m in Sources */,
 				95D101BF2A330B6100BBA838 /* AppDelegate.m in Sources */,
 				9552C4E02A37375700C61EF1 /* NSArray+MASAdditions.m in Sources */,
 				9552C5062A3738A100C61EF1 /* ImageBrowseCollectionViewCell.m in Sources */,
@@ -449,6 +476,7 @@
 				9552C5072A3738A100C61EF1 /* ViewController.m in Sources */,
 				9552C5092A3738A100C61EF1 /* ImagesModel.m in Sources */,
 				9552C5032A3738A100C61EF1 /* BottomView.m in Sources */,
+				731C917E2A5BE82700EA2DCB /* PathViewController.mm in Sources */,
 				9552C4DB2A37375700C61EF1 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				9552C4DD2A37375700C61EF1 /* MASCompositeConstraint.m in Sources */,
 				9552C4A32A37366700C61EF1 /* VlogDetailsViewController.m in Sources */,

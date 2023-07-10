@@ -2,8 +2,8 @@
 // Created by apricity on 2023/6/15.
 //
 
-#ifndef ABRUSH_COLOR_H
-#define ABRUSH_COLOR_H
+#ifndef COLOR_HPP
+#define COLOR_HPP
 
 #include <iostream>
 #include <cstdint>

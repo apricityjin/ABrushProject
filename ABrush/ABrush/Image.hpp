@@ -2,8 +2,8 @@
 // Created by apricity on 2023/6/15.
 //
 
-#ifndef ABRUSH_IMAGE_H
-#define ABRUSH_IMAGE_H
+#ifndef IMAGE_HPP
+#define IMAGE_HPP
 
 #include <string>
 #include <vector>

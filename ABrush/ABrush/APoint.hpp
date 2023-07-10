@@ -2,8 +2,8 @@
 // Created by apricity on 2023/6/13.
 //
 
-#ifndef POINT_HPP
-#define POINT_HPP
+#ifndef APOINT_HPP
+#define APOINT_HPP
 
 #include <cmath>
 #include <vector>
@@ -174,4 +174,4 @@ namespace ABrush
 }
 
 
-#endif //ABRUSH_POINT_H
+#endif //ABRUSH_APOINT_H

@@ -2,8 +2,8 @@
 // Created by apricity on 2023/6/15.
 //
 
-#ifndef ABRUSH_RENDERDATA_H
-#define ABRUSH_RENDERDATA_H
+#ifndef RENDERDATA_HPP
+#define RENDERDATA_HPP
 
 #include <iostream>
 
@@ -26,9 +26,15 @@ struct RenderData
     // 直接将所有的vertices和indices往这两个vector塞
     std::vector<Vertex>   vertices;
     std::vector<uint16_t> indices;
-    /// size     + colors
-    /// uint32_t + ......(uint32_t * size)
-    uint32_t * colorsLut;
+    /* memory:
+     * |type | start  | end    |  size | colors
+     * |4B   | (4+4)B | (4+4)B |  4B   | ......(4 * size)B
+     * |type | center | radius |  size | colors
+     * |4B   | (4+4)B | 4B     |  4B   | ......(4 * size)B
+     */
+    
+    // start end | center radius
+    float * vertexPoint;
 };
 
 #endif //ABRUSH_RENDERDATA_H

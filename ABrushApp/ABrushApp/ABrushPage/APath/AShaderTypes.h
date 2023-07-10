@@ -14,16 +14,13 @@ typedef enum AVertexInputIndex
 {
     AVertexInputIndexVertices     = 0,
     AVertexInputIndexViewportSize = 1,
+    AVertexInputIndexVertexPoint  = 2,
 } AVertexInputIndex;
 
-typedef enum AFragmentInputIndex
+typedef struct AVertex
 {
-    AFragmentInputIndexColorsLut     = 0,
-} AFragmentInputIndex;
-
-typedef struct{
     vector_float2 position;
-//    float u,v;
+//    vector_float2 uv;
 } AVertex;
 
 #endif /* ShaderTypes_h */
