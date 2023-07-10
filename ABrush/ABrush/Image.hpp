@@ -13,43 +13,19 @@
 namespace ABrush
 {
 
-    class Image
+    struct Image
     {
-    public:
-        Image(const std::string& filePath, int desiredChannels)
-        {
-            int channels;
-            data = stbi_load(filePath.c_str(), &width, &height, &channels, desiredChannels);
-            if (!data) {
-                throw std::runtime_error("Failed to load image: " + filePath);
-            }
+        Image(const std::string& filePath, int desiredChannels);
 
-            dataSize = width * height * desiredChannels;
-            storedChannels = desiredChannels;
-        }
+        const uint8_t* getData() const;
 
-        const uint8_t* getData() const {
-            return data;
-        }
+        int getWidth() const;
 
-        int getWidth() const {
-            return width;
-        }
+        int getHeight() const;
 
-        int getHeight() const {
-            return height;
-        }
+        int getStoredChannels() const;
 
-        int getStoredChannels() const {
-            return storedChannels;
-        }
-
-        virtual ~Image()
-        {
-            if (data) {
-                free(data);
-            }
-        }
+        virtual ~Image();
 
         std::uint8_t *data = nullptr;
         int width = 0;

@@ -5,24 +5,22 @@
 #ifndef RENDERDATA_HPP
 #define RENDERDATA_HPP
 
-#include <iostream>
+#include <vector>
+
+namespace ABrush {
 
 struct RenderData
 {
-
     struct Vertex
     {
         float x, y;
-//        float u, v;
+        //        float u, v;
     };
-
-    RenderData(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices)
-            : vertices(vertices), indices(indices)
-    {}
-
-    RenderData()
-    =default;
-
+    
+    RenderData(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices);
+    
+    RenderData();
+    
     // 直接将所有的vertices和indices往这两个vector塞
     std::vector<Vertex>   vertices;
     std::vector<uint16_t> indices;
@@ -36,5 +34,7 @@ struct RenderData
     // start end | center radius
     float * vertexPoint;
 };
+
+}
 
 #endif //ABRUSH_RENDERDATA_H

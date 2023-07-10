@@ -10,160 +10,62 @@
 
 namespace ABrush
 {
-    template<class T>
-    typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
-    almost_equal(T x, T y)
+template<class T>
+typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
+almost_equal(T x, T y);
+
+    struct APoint
     {
-        return std::fabs(x - y) <= std::numeric_limits<T>::epsilon() * std::fabs(x + y) * 2 ||
-               std::fabs(x - y) < std::numeric_limits<T>::min();
-    }
 
-    class APoint
-    {
-    public:
+        APoint();
 
-        APoint() : x(0.0), y(0.0)
-        {}
+        APoint(float x, float y);
 
-        APoint(float x, float y) : x(x), y(y)
-        {}
+        APoint(float x, float y, bool normalize);
 
-        APoint(float x, float y, bool normalize) : x(x), y(y)
-        {
-            if (normalize) {
-                this->normalize();
-            }
-        }
+        APoint(const APoint &aVector2);
 
-        APoint(const APoint &aVector2) : x(aVector2.x), y(aVector2.y)
-        {}
+        APoint(const APoint &aVector2, bool normalize);
+        
+        void set(float aX, float aY);
 
-        APoint(const APoint &aVector2, bool normalize) : x(aVector2.x), y(aVector2.y)
-        {
-            if (normalize) {
-                this->normalize();
-            }
-        }
+        void set(const APoint &aVector2);
 
-        void set(float aX, float aY)
-        {
-            x = aX;
-            y = aY;
-        }
+        float length() const;
 
-        void set(const APoint &aVector2)
-        {
-            x = aVector2.x;
-            y = aVector2.y;
-        }
+        void normalize();
 
-        [[nodiscard]] float length() const
-        {
-            return sqrt(x * x + y * y);
-        }
+        APoint &normalized();
 
-        void normalize()
-        {
-            float len = length();
-            x /= len;
-            y /= len;
-        }
+        APoint operator+(const APoint &aVector2) const;
 
-        APoint &normalized()
-        {
-            float len = length();
-            x /= len;
-            y /= len;
-            return *this;
-        }
+        APoint &operator+=(const APoint &aVector2);
 
-        APoint operator+(const APoint &aVector2) const
-        {
-            return {x + aVector2.x, y + aVector2.y};
-        }
+        APoint operator-(const APoint &aVector2) const;
 
-        APoint &operator+=(const APoint &aVector2)
-        {
-            this->x += aVector2.x;
-            this->y += aVector2.y;
-            return *this;
-        }
+        APoint &operator-=(const APoint &aVector2);
 
-        APoint operator-(const APoint &aVector2) const
-        {
-            return {x - aVector2.x, y - aVector2.y};
-        }
+        APoint operator*(float s) const;
+        
+        APoint &operator*=(float s);
 
-        APoint &operator-=(const APoint &aVector2)
-        {
-            this->x -= aVector2.x;
-            this->y -= aVector2.y;
-            return *this;
-        }
+        APoint operator*(const APoint &aVector2) const;
+        
+        APoint &operator*=(const APoint &aVector2);
 
-        APoint operator*(float s) const
-        {
-            return {x * s, y * s};
-        }
+        APoint operator/(float s) const;
 
-        APoint &operator*=(float s)
-        {
-            this->x *= s;
-            this->y *= s;
-            return *this;
-        }
+        APoint &operator/=(float s);
 
-        APoint operator*(const APoint &aVector2) const
-        {
-            return {x * aVector2.x, y * aVector2.y};
-        }
+        APoint operator/(const APoint &aVector2) const;
+        
+        APoint &operator/=(const APoint &aVector2);
 
-        APoint &operator*=(const APoint &aVector2)
-        {
-            this->x *= aVector2.x;
-            this->y *= aVector2.y;
-            return *this;
-        }
+        APoint operator-() const;
+        
+        bool operator==(const APoint &aVector2) const;
 
-        APoint operator/(float s) const
-        {
-            return {x / s, y / s};
-        }
-
-        APoint &operator/=(float s)
-        {
-            this->x /= s;
-            this->y /= s;
-            return *this;
-        }
-
-        APoint operator/(const APoint &aVector2) const
-        {
-            return {x / aVector2.x, y / aVector2.y};
-        }
-
-        APoint &operator/=(const APoint &aVector2)
-        {
-            this->x /= aVector2.x;
-            this->y /= aVector2.y;
-            return *this;
-        }
-
-        APoint operator-() const
-        {
-            return {-x, -y};
-        }
-
-        bool operator==(const APoint &aVector2) const
-        {
-            return almost_equal(x, aVector2.x) &&
-                   almost_equal(y, aVector2.y);
-        }
-
-        bool operator!=(const APoint &aVector2) const
-        {
-            return !(*this == aVector2);
-        }
+        bool operator!=(const APoint &aVector2) const;
 
         float x, y;
         static const size_t size = 2;
