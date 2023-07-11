@@ -5,11 +5,13 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+namespace ABrush {
 
-class Texture
+struct Texture
 {
-
+    
 };
 
+}
 
 #endif //ABRUSH_TEXTURE_H

@@ -6,6 +6,7 @@
 #define RENDERDATA_HPP
 
 #include <vector>
+#include <simd/simd.h>
 
 namespace ABrush {
 
@@ -32,7 +33,7 @@ struct RenderData
      */
     
     // start end | center radius
-    float * vertexPoint;
+    vector_float2 * vertexPoint;
 };
 
 }

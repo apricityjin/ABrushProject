@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7302F4502A5D5A0700466890 /* AngularViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7302F44F2A5D5A0700466890 /* AngularViewController.mm */; };
 		731C917E2A5BE82700EA2DCB /* PathViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C917D2A5BE82700EA2DCB /* PathViewController.mm */; };
 		731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C91932A5C21D300EA2DCB /* GradientViewController.mm */; };
+		731C92072A5CEAB200EA2DCB /* GShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 731C92062A5CEAB200EA2DCB /* GShaders.metal */; };
 		7323D9DB2A57AF42008F86A1 /* libABrush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7323D9DA2A57AF42008F86A1 /* libABrush.a */; };
 		7324CF892A569A3000533EE1 /* AShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF882A569A3000533EE1 /* AShaders.metal */; };
 		9552C4A02A37366700C61EF1 /* VlogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4962A37366700C61EF1 /* VlogTableViewCell.m */; };
@@ -55,10 +57,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7302F44E2A5D5A0700466890 /* AngularViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AngularViewController.h; sourceTree = "<group>"; };
+		7302F44F2A5D5A0700466890 /* AngularViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AngularViewController.mm; sourceTree = "<group>"; };
 		731C917C2A5BE82700EA2DCB /* PathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathViewController.h; sourceTree = "<group>"; };
 		731C917D2A5BE82700EA2DCB /* PathViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PathViewController.mm; sourceTree = "<group>"; };
 		731C91922A5C21D300EA2DCB /* GradientViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientViewController.h; sourceTree = "<group>"; };
 		731C91932A5C21D300EA2DCB /* GradientViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GradientViewController.mm; sourceTree = "<group>"; };
+		731C92052A5CEAA200EA2DCB /* GShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GShaderTypes.h; sourceTree = "<group>"; };
+		731C92062A5CEAB200EA2DCB /* GShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GShaders.metal; sourceTree = "<group>"; };
 		7323D9DA2A57AF42008F86A1 /* libABrush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libABrush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7324CF872A569A1D00533EE1 /* AShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AShaderTypes.h; sourceTree = "<group>"; };
 		7324CF882A569A3000533EE1 /* AShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AShaders.metal; sourceTree = "<group>"; };
@@ -153,6 +159,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7302F4512A5D5A0B00466890 /* AngularGradient */ = {
+			isa = PBXGroup;
+			children = (
+				7302F44E2A5D5A0700466890 /* AngularViewController.h */,
+				7302F44F2A5D5A0700466890 /* AngularViewController.mm */,
+			);
+			path = AngularGradient;
+			sourceTree = "<group>";
+		};
 		731C917B2A5BE7FC00EA2DCB /* APath */ = {
 			isa = PBXGroup;
 			children = (
@@ -164,13 +179,15 @@
 			path = APath;
 			sourceTree = "<group>";
 		};
-		731C91952A5C21DA00EA2DCB /* Gradient */ = {
+		731C91952A5C21DA00EA2DCB /* RadialGradient */ = {
 			isa = PBXGroup;
 			children = (
 				731C91922A5C21D300EA2DCB /* GradientViewController.h */,
 				731C91932A5C21D300EA2DCB /* GradientViewController.mm */,
+				731C92052A5CEAA200EA2DCB /* GShaderTypes.h */,
+				731C92062A5CEAB200EA2DCB /* GShaders.metal */,
 			);
-			path = Gradient;
+			path = RadialGradient;
 			sourceTree = "<group>";
 		};
 		9552C4562A36B0D800C61EF1 /* Frameworks */ = {
@@ -184,7 +201,8 @@
 		9552C4872A3732BC00C61EF1 /* ABrushPage */ = {
 			isa = PBXGroup;
 			children = (
-				731C91952A5C21DA00EA2DCB /* Gradient */,
+				7302F4512A5D5A0B00466890 /* AngularGradient */,
+				731C91952A5C21DA00EA2DCB /* RadialGradient */,
 				731C917B2A5BE7FC00EA2DCB /* APath */,
 				95D101C32A330B6100BBA838 /* ABrushViewController.h */,
 				95D101C42A330B6100BBA838 /* ABrushViewController.m */,
@@ -467,6 +485,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */,
+				7302F4502A5D5A0700466890 /* AngularViewController.mm in Sources */,
 				95D101C52A330B6100BBA838 /* ABrushViewController.m in Sources */,
 				95D101BF2A330B6100BBA838 /* AppDelegate.m in Sources */,
 				9552C4E02A37375700C61EF1 /* NSArray+MASAdditions.m in Sources */,
@@ -498,6 +517,7 @@
 				9552C4E22A37375700C61EF1 /* MASConstraint.m in Sources */,
 				9552C4A02A37366700C61EF1 /* VlogTableViewCell.m in Sources */,
 				9552C5012A3738A100C61EF1 /* ShowImagesViewController.m in Sources */,
+				731C92072A5CEAB200EA2DCB /* GShaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

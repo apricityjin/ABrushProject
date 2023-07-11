@@ -6,6 +6,7 @@
 //
 
 #include "Affine.hpp"
+#include <cmath>
 
 namespace ABrush
 {

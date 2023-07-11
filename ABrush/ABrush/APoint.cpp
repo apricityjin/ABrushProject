@@ -6,6 +6,7 @@
 //
 
 #include "APoint.hpp"
+#include <cmath>
 
 namespace ABrush
 {

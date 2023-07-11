@@ -1,18 +1,17 @@
 //
-//  PathViewController.m
+//  GradientViewController.m
 //  ABrushApp
 //
 //  Created by Apricity on 2023/7/10.
 //
 
-#import "PathViewController.h"
+#import "GradientViewController.h"
 #import <MetalKit/MetalKit.h>
-#import "AShaderTypes.h"
-
-#include "ABrush.hpp"
+#import "GShaderTypes.h"
+#import "ABrush.hpp"
 using namespace ABrush;
 
-@interface PathViewController ()
+@interface GradientViewController ()
 <MTKViewDelegate>
 
 @property (nonatomic, strong) MTKView *mtkView;
@@ -32,13 +31,11 @@ using namespace ABrush;
 
 @end
 
-@implementation PathViewController
+@implementation GradientViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
     self.mtkView = [[MTKView alloc] initWithFrame:self.view.bounds];
     self.mtkView.device = MTLCreateSystemDefaultDevice();
     [self.view insertSubview:self.mtkView atIndex:0];
@@ -56,8 +53,8 @@ using namespace ABrush;
 -(void)setupPipeline
 {
     id<MTLLibrary> defaultLibrary = [self.mtkView.device newDefaultLibrary];
-    id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexAShader"];
-    id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentAShader"];
+    id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexGShader"];
+    id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentGShader"];
     
     MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
     pipelineStateDescriptor.vertexFunction = vertexFunction;
@@ -70,31 +67,21 @@ using namespace ABrush;
 
 - (void)setup
 {
-    APoint p0 = APoint(100.0, 50.0);
-//    APoint p0 = APoint(0.0, 0.0);
-    APoint p1 = APoint(60.0, 300.0);
-    APoint p2 = APoint(200.0, 150.0);
-    APoint p3 = APoint(300.0, 400.0);
+    APoint p  = {0.0, 0.0};
+    APoint p0 = {-400.0,  800.0};
+    APoint p1 = {400.0,   800.0};
+    APoint p2 = {400.0,  -800.0};
+    APoint p3 = {-400.0, -800.0};
     
-    APoint p4 = APoint(200.0, 500.0);
-    APoint p5 = APoint(-150.0, 300.0);
-    APoint p6 = APoint(-150.0, -300.0);
-    APoint p7 = APoint(300.0, -400.0);
     Path path = Path();
     path
-//        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p3);
-        .moveTo(p4).curveTo(p5, p6, p7).close();
+        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p3).close();
+//        .moveTo(p0).curveTo(p1, p2, p3).close();
     
     RenderData data = RenderData();
     Flatten *flattens = path.flatten();
-//    FillTessellator tessellator = FillTessellator();
-//    tessellator.fill(flattens, data);
-    
-    StrokeTessellator tessellator = StrokeTessellator();
-    tessellator.line_join_style = StrokeTessellator::LineJoin::LineJoinRound;
-    tessellator.line_width = 20.0;
-    tessellator.line_cap_style = StrokeTessellator::LineCap::LineCapRound;
-    tessellator.stroke(flattens, data);
+    FillTessellator tessellator = FillTessellator();
+    tessellator.fill(flattens, data);
     
     std::vector<Color> colors = {
         {255, 0, 0, 255},
@@ -108,13 +95,14 @@ using namespace ABrush;
     };
     Gradient g = Gradient(colors, locations);
     Builder b = Builder();
-    b.buildLinearGradient(data, g, p4, p7);
+//    b.buildLinearGradient(data, g, p0, p2);
+    b.buildRadialGradient(data, g, p0, p2);
     
     _vertexPointBufferLength = 4 * sizeof(float);
     _vertexPoint = [_mtkView.device newBufferWithBytes:data.vertexPoint
                                                 length:_vertexPointBufferLength
                                                options:MTLResourceStorageModeShared];
-
+    
     uint * colorsLut = g.buildLut();
     MTLTextureDescriptor *textureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:g.size height:1 mipmapped:NO];
     self.texture = [self.mtkView.device newTextureWithDescriptor:textureDescriptor];
@@ -123,16 +111,17 @@ using namespace ABrush;
     
     //
     _vertexCount = data.vertices.size();
-    _vertexBufferLength = _vertexCount * sizeof(AVertex);
+    _vertexBufferLength = _vertexCount * sizeof(GVertex);
     _vertices = [_mtkView.device newBufferWithBytes:data.vertices.data()
                                              length:_vertexBufferLength
-                                             options:MTLResourceStorageModeShared];
+                                            options:MTLResourceStorageModeShared];
     
     _indexCount = data.indices.size();
     _indexBufferLength = _indexCount * sizeof(UInt16);
     _indices = [_mtkView.device newBufferWithBytes:data.indices.data()
-                                            length:_indexBufferLength
-                                            options:MTLResourceStorageModeShared];
+                                 length:_indexBufferLength
+                                options:MTLResourceStorageModeShared];
+    
     return;
 }
 
@@ -158,15 +147,19 @@ using namespace ABrush;
         
         [renderEncoder setVertexBytes:&_viewportSize
                                length:sizeof(_viewportSize)
-                              atIndex:AVertexInputIndexViewportSize];
+                              atIndex:GVertexInputIndexViewportSize];
         
         [renderEncoder setVertexBuffer:_vertices
                                 offset:0
-                               atIndex:AVertexInputIndexVertices];
+                               atIndex:GVertexInputIndexVertices];
         
-        [renderEncoder setVertexBuffer:_vertexPoint
-                                offset:0
-                               atIndex:AVertexInputIndexVertexPoint];
+        [renderEncoder setFragmentBuffer:_vertexPoint
+                                  offset:0
+                                 atIndex:GFragmentInputIndexVertexPoint];
+        
+        [renderEncoder setFragmentBytes:&_viewportSize
+                                 length:sizeof(_viewportSize)
+                                atIndex:GFragmentInputIndexViewportSize];
         
         [renderEncoder setFragmentTexture:self.texture
                                   atIndex:0];

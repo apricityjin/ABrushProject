@@ -14,6 +14,10 @@
 		731C91F82A5C360A00EA2DCB /* FillTessellator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C91F72A5C360A00EA2DCB /* FillTessellator.cpp */; };
 		731C91FA2A5C368A00EA2DCB /* RenderData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C91F92A5C368A00EA2DCB /* RenderData.cpp */; };
 		731C91FC2A5C377D00EA2DCB /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C91FB2A5C377D00EA2DCB /* Image.cpp */; };
+		731C91FE2A5CE81700EA2DCB /* Gradient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C91FD2A5CE81700EA2DCB /* Gradient.cpp */; };
+		731C92002A5CE88700EA2DCB /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C91FF2A5CE88700EA2DCB /* Color.cpp */; };
+		731C92022A5CE97300EA2DCB /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C92012A5CE97300EA2DCB /* Texture.cpp */; };
+		731C92042A5CE98500EA2DCB /* Builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 731C92032A5CE98500EA2DCB /* Builder.cpp */; };
 		7324CF672A56978100533EE1 /* Image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF472A56978100533EE1 /* Image.hpp */; };
 		7324CF682A56978100533EE1 /* Path.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF482A56978100533EE1 /* Path.hpp */; };
 		7324CF692A56978100533EE1 /* StrokeTessellator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF492A56978100533EE1 /* StrokeTessellator.hpp */; };
@@ -52,6 +56,10 @@
 		731C91F72A5C360A00EA2DCB /* FillTessellator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FillTessellator.cpp; sourceTree = "<group>"; };
 		731C91F92A5C368A00EA2DCB /* RenderData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RenderData.cpp; sourceTree = "<group>"; };
 		731C91FB2A5C377D00EA2DCB /* Image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
+		731C91FD2A5CE81700EA2DCB /* Gradient.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Gradient.cpp; sourceTree = "<group>"; };
+		731C91FF2A5CE88700EA2DCB /* Color.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
+		731C92012A5CE97300EA2DCB /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		731C92032A5CE98500EA2DCB /* Builder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Builder.cpp; sourceTree = "<group>"; };
 		7324CF392A56975400533EE1 /* libABrush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libABrush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7324CF472A56978100533EE1 /* Image.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Image.hpp; sourceTree = "<group>"; };
 		7324CF482A56978100533EE1 /* Path.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Path.hpp; sourceTree = "<group>"; };
@@ -121,10 +129,13 @@
 				7324CF4A2A56978100533EE1 /* APoint.hpp */,
 				731C91EF2A5C305C00EA2DCB /* APoint.cpp */,
 				7324CF4E2A56978100533EE1 /* Builder.hpp */,
+				731C92032A5CE98500EA2DCB /* Builder.cpp */,
 				7324CF662A56978100533EE1 /* Color.hpp */,
+				731C91FF2A5CE88700EA2DCB /* Color.cpp */,
 				7324CF4C2A56978100533EE1 /* FillTessellator.hpp */,
 				731C91F72A5C360A00EA2DCB /* FillTessellator.cpp */,
 				7324CF4D2A56978100533EE1 /* Gradient.hpp */,
+				731C91FD2A5CE81700EA2DCB /* Gradient.cpp */,
 				7324CF472A56978100533EE1 /* Image.hpp */,
 				731C91FB2A5C377D00EA2DCB /* Image.cpp */,
 				7324CF482A56978100533EE1 /* Path.hpp */,
@@ -134,6 +145,7 @@
 				7324CF492A56978100533EE1 /* StrokeTessellator.hpp */,
 				731C91F52A5C35B000EA2DCB /* StrokeTessellator.cpp */,
 				7324CF4F2A56978100533EE1 /* Texture.hpp */,
+				731C92012A5CE97300EA2DCB /* Texture.cpp */,
 			);
 			path = ABrush;
 			sourceTree = "<group>";
@@ -277,11 +289,15 @@
 				7324CF752A56978100533EE1 /* sweep.c in Sources */,
 				7324CF7D2A56978100533EE1 /* mesh.c in Sources */,
 				731C91FA2A5C368A00EA2DCB /* RenderData.cpp in Sources */,
+				731C92042A5CE98500EA2DCB /* Builder.cpp in Sources */,
 				731C91F42A5C346E00EA2DCB /* Path.cpp in Sources */,
 				731C91F82A5C360A00EA2DCB /* FillTessellator.cpp in Sources */,
+				731C92022A5CE97300EA2DCB /* Texture.cpp in Sources */,
 				7324CF712A56978100533EE1 /* dict.c in Sources */,
 				7324CF732A56978100533EE1 /* priorityq.c in Sources */,
+				731C92002A5CE88700EA2DCB /* Color.cpp in Sources */,
 				731C91F22A5C32FA00EA2DCB /* Affine.cpp in Sources */,
+				731C91FE2A5CE81700EA2DCB /* Gradient.cpp in Sources */,
 				731C91F02A5C305C00EA2DCB /* APoint.cpp in Sources */,
 				731C91FC2A5C377D00EA2DCB /* Image.cpp in Sources */,
 				731C91F62A5C35B000EA2DCB /* StrokeTessellator.cpp in Sources */,

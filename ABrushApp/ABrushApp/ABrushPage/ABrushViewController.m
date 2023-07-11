@@ -14,7 +14,7 @@
 <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, copy) NSArray * dataAry;
+@property (nonatomic, copy) NSArray<NSArray *> * dataAry;
 
 @end
 
@@ -30,19 +30,19 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return self.dataAry.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.dataAry.count;
+    return self.dataAry[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass(UITableViewCell.class) forIndexPath:indexPath];
     
-    cell.textLabel.text = self.dataAry[indexPath.row];
+    cell.textLabel.text = self.dataAry[indexPath.section][indexPath.row];
     
     return cell;
 }
@@ -51,12 +51,14 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     UIViewController * vc;
-    if (indexPath.row == 0) {
-        vc = [[PathViewController alloc] init];
-    } else if (indexPath.row == 1) {
-        vc = [[GradientViewController alloc] init];
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            vc = [[PathViewController alloc] init];
+        } else if (indexPath.row == 1) {
+            vc = [[GradientViewController alloc] init];
+        }
     }
-    vc.title = self.dataAry[indexPath.row];
+    vc.title = self.dataAry[indexPath.section][indexPath.row];
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -66,7 +68,7 @@
 - (UITableView *)tableView
 {
     if (_tableView == nil) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         [_tableView registerClass:UITableViewCell.class
@@ -80,9 +82,8 @@
 {
     if (_dataAry == nil) {
         _dataAry = @[
-            @"Path",
-            @"Gradient",
-            @"Path & Gradient"
+            @[@"Gradient Linear",
+              @"Gradient Radial"],
         ];
     }
     return _dataAry;

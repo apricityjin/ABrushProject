@@ -6,6 +6,7 @@
 //
 
 #include "Path.hpp"
+#include <cmath>
 
 namespace ABrush
 {
