@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7302F4502A5D5A0700466890 /* AngularViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7302F44F2A5D5A0700466890 /* AngularViewController.mm */; };
+		7302F4542A5D6FE200466890 /* AGShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7302F4532A5D6FE200466890 /* AGShaders.metal */; };
 		731C917E2A5BE82700EA2DCB /* PathViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C917D2A5BE82700EA2DCB /* PathViewController.mm */; };
 		731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C91932A5C21D300EA2DCB /* GradientViewController.mm */; };
 		731C92072A5CEAB200EA2DCB /* GShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 731C92062A5CEAB200EA2DCB /* GShaders.metal */; };
@@ -59,6 +60,8 @@
 /* Begin PBXFileReference section */
 		7302F44E2A5D5A0700466890 /* AngularViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AngularViewController.h; sourceTree = "<group>"; };
 		7302F44F2A5D5A0700466890 /* AngularViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AngularViewController.mm; sourceTree = "<group>"; };
+		7302F4522A5D6FD300466890 /* AGShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AGShaderTypes.h; sourceTree = "<group>"; };
+		7302F4532A5D6FE200466890 /* AGShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AGShaders.metal; sourceTree = "<group>"; };
 		731C917C2A5BE82700EA2DCB /* PathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathViewController.h; sourceTree = "<group>"; };
 		731C917D2A5BE82700EA2DCB /* PathViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PathViewController.mm; sourceTree = "<group>"; };
 		731C91922A5C21D300EA2DCB /* GradientViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientViewController.h; sourceTree = "<group>"; };
@@ -164,6 +167,8 @@
 			children = (
 				7302F44E2A5D5A0700466890 /* AngularViewController.h */,
 				7302F44F2A5D5A0700466890 /* AngularViewController.mm */,
+				7302F4522A5D6FD300466890 /* AGShaderTypes.h */,
+				7302F4532A5D6FE200466890 /* AGShaders.metal */,
 			);
 			path = AngularGradient;
 			sourceTree = "<group>";
@@ -488,6 +493,7 @@
 				7302F4502A5D5A0700466890 /* AngularViewController.mm in Sources */,
 				95D101C52A330B6100BBA838 /* ABrushViewController.m in Sources */,
 				95D101BF2A330B6100BBA838 /* AppDelegate.m in Sources */,
+				7302F4542A5D6FE200466890 /* AGShaders.metal in Sources */,
 				9552C4E02A37375700C61EF1 /* NSArray+MASAdditions.m in Sources */,
 				9552C5062A3738A100C61EF1 /* ImageBrowseCollectionViewCell.m in Sources */,
 				9552C4A22A37366700C61EF1 /* VlogModel.m in Sources */,

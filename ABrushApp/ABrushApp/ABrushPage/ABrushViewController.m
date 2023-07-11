@@ -8,7 +8,8 @@
 #import "ABrushViewController.h"
 
 #import "APath/PathViewController.h"
-#import "Gradient/GradientViewController.h"
+#import "RadialGradient/GradientViewController.h"
+#import "AngularGradient/AngularViewController.h"
 
 @interface ABrushViewController ()
 <UITableViewDelegate, UITableViewDataSource>
@@ -52,12 +53,22 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     UIViewController * vc;
     if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            vc = [[PathViewController alloc] init];
-        } else if (indexPath.row == 1) {
-            vc = [[GradientViewController alloc] init];
+        switch (indexPath.row) {
+            case 0:
+                vc = [[PathViewController alloc] init];
+                break;
+            case 1:
+                vc = [[GradientViewController alloc] init];
+                break;
+            case 2:
+                vc = [[AngularViewController alloc] init];
+                break;
+            default:
+                break;
         }
     }
+    
+    
     vc.title = self.dataAry[indexPath.section][indexPath.row];
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
@@ -83,7 +94,8 @@
     if (_dataAry == nil) {
         _dataAry = @[
             @[@"Gradient Linear",
-              @"Gradient Radial"],
+              @"Gradient Radial",
+              @"Gradient Angular"],
         ];
     }
     return _dataAry;
