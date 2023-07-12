@@ -10,6 +10,7 @@
 #import "APath/PathViewController.h"
 #import "RadialGradient/GradientViewController.h"
 #import "AngularGradient/AngularViewController.h"
+#import "TexImg/TexImgViewController.h"
 
 @interface ABrushViewController ()
 <UITableViewDelegate, UITableViewDataSource>
@@ -66,6 +67,15 @@
             default:
                 break;
         }
+    } else if (indexPath.section == 1) {
+        switch (indexPath.row) {
+            case 0:
+                vc = [[TexImgViewController alloc] init];
+                break;
+                
+            default:
+                break;
+        }
     }
     
     
@@ -96,6 +106,7 @@
             @[@"Gradient Linear",
               @"Gradient Radial",
               @"Gradient Angular"],
+            @[@"Texture Image"],
         ];
     }
     return _dataAry;

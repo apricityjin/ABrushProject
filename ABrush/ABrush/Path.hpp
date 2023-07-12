@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "APoint.hpp"
+#include "ABShaderTypes.h"
 
 namespace ABrush
 {

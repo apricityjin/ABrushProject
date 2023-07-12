@@ -42,4 +42,11 @@ int Image::getStoredChannels() const
     return storedChannels;
 }
 
+Image::~Image()
+{
+    if (data) {
+        free(data);
+    }
+}
+
 } // ABrush

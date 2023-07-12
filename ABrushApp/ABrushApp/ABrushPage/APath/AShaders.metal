@@ -44,15 +44,11 @@ vertexAShader(uint vertexID [[vertex_id]],
     return out;
 }
 
-
 fragment half4 fragmentAShader(ARasterizerData in [[stage_in]],
                                texture2d<half> tex [[texture(0)]])
 {
-    
     constexpr sampler textureSampler (mag_filter::linear,
                                       min_filter::linear);
-
     const half4 color = tex.sample(textureSampler, in.uv);
-
     return color;
 }

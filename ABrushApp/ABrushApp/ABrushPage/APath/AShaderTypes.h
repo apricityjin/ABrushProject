@@ -20,7 +20,7 @@ typedef enum AVertexInputIndex
 typedef struct AVertex
 {
     vector_float2 position;
-//    vector_float2 uv;
+    vector_float2 uv;
 } AVertex;
 
 #endif /* ShaderTypes_h */

@@ -25,7 +25,7 @@ typedef enum AGFragmentInputIndex
 typedef struct AGVertex
 {
     vector_float2 position;
-    //    vector_float2 uv;
+        vector_float2 uv;
 } AGVertex;
 
 #endif /* AGShaderTypes_h */

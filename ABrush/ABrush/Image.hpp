@@ -27,7 +27,7 @@ namespace ABrush
 
         virtual ~Image();
 
-        std::uint8_t *data = nullptr;
+        uint8_t *data = nullptr;
         int width = 0;
         int height = 0;
         int dataSize = 0;

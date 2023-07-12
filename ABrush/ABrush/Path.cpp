@@ -72,8 +72,8 @@ Path::Path()
 Path &Path::moveTo(APoint &p)
 {
     Contour c;
-    c.commandIndex = commands.size();
-    c.pointIndex   = points.size();
+    c.commandIndex = (uint32_t)commands.size();
+    c.pointIndex   = (uint32_t)points.size();
     contours.push_back(c);
     commands.push_back(Command::MoveTo);
     points.push_back(p);

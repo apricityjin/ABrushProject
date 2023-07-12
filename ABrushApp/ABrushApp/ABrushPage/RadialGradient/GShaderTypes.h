@@ -27,7 +27,7 @@ typedef enum GFragmentInputIndex
 typedef struct GVertex
 {
     vector_float2 position;
-    //    vector_float2 uv;
+        vector_float2 uv;
 } GVertex;
 
 #endif /* GShaderTypes_h */
