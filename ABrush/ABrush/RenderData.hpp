@@ -23,7 +23,9 @@ struct RenderData
     std::vector<uint16_t> indices;
     
     // start end | center radius
-    vector_float2 * vertexPoint;
+    vector_float2 * vertexPoint = nullptr;
+    GradientData * gradientData = nullptr;
+    uint32_t * colorsLut = nullptr;
 };
 
 }

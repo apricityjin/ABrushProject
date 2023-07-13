@@ -31,7 +31,7 @@ namespace ABrush
         std::vector<Color> colors;
         /// 储存坐标 0.0 ~ 1.0
         std::vector<float> locations;
-        uint size;
+        uint size = 256;
     };
 
 } // ABrush

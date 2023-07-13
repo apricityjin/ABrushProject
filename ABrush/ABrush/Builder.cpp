@@ -153,4 +153,34 @@ void Builder::buildAngularGradient(RenderData &data, Gradient &g, APoint &start,
     *pointer++ = vector2(end.x, end.y);
 }
 
+void Builder::buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, GradientStyle style)
+{
+    data.gradientData = (GradientData *)malloc(sizeof(GradientData));
+    data.gradientData->x1 = start.x;
+    data.gradientData->y1 = start.y;
+    data.gradientData->x2 = end.x;
+    data.gradientData->y2 = end.y;
+    APoint p = (end-start);
+    data.gradientData->x3 = -p.y + start.x;
+    data.gradientData->y3 = p.x + start.y;
+    data.gradientData->colorSize = g.size;
+    data.gradientData->style = style;
+    data.colorsLut = g.buildLut();
+}
+
+void Builder::buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, float controlRadius, GradientStyle style)
+{
+    data.gradientData = (GradientData *)malloc(sizeof(GradientData));
+    data.gradientData->x1 = start.x;
+    data.gradientData->y1 = start.y;
+    data.gradientData->x2 = end.x;
+    data.gradientData->y2 = end.y;
+    APoint p = (end-start).normalized() * controlRadius;
+    data.gradientData->x3 = -p.y + start.x;
+    data.gradientData->y3 = p.x + start.y;
+    data.gradientData->colorSize = g.size;
+    data.gradientData->style = style;
+    data.colorsLut = g.buildLut();
+}
+
 }

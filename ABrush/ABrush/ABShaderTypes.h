@@ -10,6 +10,12 @@
 
 #include <simd/simd.h>
 
+typedef enum : uint32_t{
+    GradientStyleLinear  = 0,
+    GradientStyleRadial  = 1,
+    GradientStyleAngular = 2,
+} GradientStyle;
+
 typedef struct {
 //    vector_float2 pos; // 空间坐标
 //    vector_float2 uv; // 纹理坐标
@@ -17,11 +23,12 @@ typedef struct {
     float u, v;
 } Vertex;
 
-//typedef struct {
-//    vector_float2 start;
-//    vector_float2 end;
-//    uint colorSize;
-//    uint type;
-//} GradientData;
+typedef struct {
+    uint32_t colorSize;
+    uint32_t style; // GradientStyle
+    float x1, y1,
+    x2, y2,
+    x3, y3;
+} GradientData;
 
 #endif /* ABShaderTypes_h */

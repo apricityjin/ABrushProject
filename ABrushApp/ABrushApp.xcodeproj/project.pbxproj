@@ -10,6 +10,8 @@
 		7302F4502A5D5A0700466890 /* AngularViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7302F44F2A5D5A0700466890 /* AngularViewController.mm */; };
 		7302F4542A5D6FE200466890 /* AGShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7302F4532A5D6FE200466890 /* AGShaders.metal */; };
 		731500ED2A5E85D1002C2711 /* TexImgViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731500EC2A5E85D1002C2711 /* TexImgViewController.mm */; };
+		731500F12A5EC3A5002C2711 /* GradientStyleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */; };
+		731500F72A5EC6A0002C2711 /* GSShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 731500F62A5EC6A0002C2711 /* GSShaders.metal */; };
 		731C917E2A5BE82700EA2DCB /* PathViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C917D2A5BE82700EA2DCB /* PathViewController.mm */; };
 		731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C91932A5C21D300EA2DCB /* GradientViewController.mm */; };
 		731C92072A5CEAB200EA2DCB /* GShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 731C92062A5CEAB200EA2DCB /* GShaders.metal */; };
@@ -65,6 +67,10 @@
 		7302F4532A5D6FE200466890 /* AGShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AGShaders.metal; sourceTree = "<group>"; };
 		731500EB2A5E85D1002C2711 /* TexImgViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TexImgViewController.h; sourceTree = "<group>"; };
 		731500EC2A5E85D1002C2711 /* TexImgViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TexImgViewController.mm; sourceTree = "<group>"; };
+		731500EF2A5EC3A5002C2711 /* GradientStyleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientStyleViewController.h; sourceTree = "<group>"; };
+		731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GradientStyleViewController.mm; sourceTree = "<group>"; };
+		731500F52A5EC48C002C2711 /* GSShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSShaderTypes.h; sourceTree = "<group>"; };
+		731500F62A5EC6A0002C2711 /* GSShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GSShaders.metal; sourceTree = "<group>"; };
 		731C917C2A5BE82700EA2DCB /* PathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathViewController.h; sourceTree = "<group>"; };
 		731C917D2A5BE82700EA2DCB /* PathViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PathViewController.mm; sourceTree = "<group>"; };
 		731C91922A5C21D300EA2DCB /* GradientViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientViewController.h; sourceTree = "<group>"; };
@@ -185,6 +191,17 @@
 			path = TexImg;
 			sourceTree = "<group>";
 		};
+		731500EE2A5EC395002C2711 /* GradientStyle */ = {
+			isa = PBXGroup;
+			children = (
+				731500EF2A5EC3A5002C2711 /* GradientStyleViewController.h */,
+				731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */,
+				731500F52A5EC48C002C2711 /* GSShaderTypes.h */,
+				731500F62A5EC6A0002C2711 /* GSShaders.metal */,
+			);
+			path = GradientStyle;
+			sourceTree = "<group>";
+		};
 		731C917B2A5BE7FC00EA2DCB /* APath */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +239,7 @@
 				7302F4512A5D5A0B00466890 /* AngularGradient */,
 				731C91952A5C21DA00EA2DCB /* RadialGradient */,
 				731C917B2A5BE7FC00EA2DCB /* APath */,
+				731500EE2A5EC395002C2711 /* GradientStyle */,
 				95D101C32A330B6100BBA838 /* ABrushViewController.h */,
 				95D101C42A330B6100BBA838 /* ABrushViewController.m */,
 			);
@@ -521,6 +539,7 @@
 				9552C4A32A37366700C61EF1 /* VlogDetailsViewController.m in Sources */,
 				7324CF892A569A3000533EE1 /* AShaders.metal in Sources */,
 				9552C50B2A3738A100C61EF1 /* ImageDownloader.m in Sources */,
+				731500F12A5EC3A5002C2711 /* GradientStyleViewController.mm in Sources */,
 				9552C4DC2A37375700C61EF1 /* ViewController+MASAdditions.m in Sources */,
 				9552C4E42A37375700C61EF1 /* MASViewAttribute.m in Sources */,
 				9552C5022A3738A100C61EF1 /* ShowImagesModel.m in Sources */,
@@ -529,6 +548,7 @@
 				9552C5042A3738A100C61EF1 /* ShowImagesCollectionViewCell.m in Sources */,
 				9552C4DE2A37375700C61EF1 /* MASConstraintMaker.m in Sources */,
 				9552C4DF2A37375700C61EF1 /* MASLayoutConstraint.m in Sources */,
+				731500F72A5EC6A0002C2711 /* GSShaders.metal in Sources */,
 				9552C5052A3738A100C61EF1 /* ImageBrowseViewController.m in Sources */,
 				9552C50A2A3738A100C61EF1 /* ImagesTableViewController.m in Sources */,
 				9552C4A12A37366700C61EF1 /* DMShaders.metal in Sources */,

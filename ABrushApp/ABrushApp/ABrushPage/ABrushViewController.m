@@ -11,6 +11,7 @@
 #import "RadialGradient/GradientViewController.h"
 #import "AngularGradient/AngularViewController.h"
 #import "TexImg/TexImgViewController.h"
+#import "GradientStyle/GradientStyleViewController.h"
 
 @interface ABrushViewController ()
 <UITableViewDelegate, UITableViewDataSource>
@@ -64,6 +65,9 @@
             case 2:
                 vc = [[AngularViewController alloc] init];
                 break;
+            case 3:
+                vc = [[GradientStyleViewController alloc] init];
+                break;
             default:
                 break;
         }
@@ -105,7 +109,8 @@
         _dataAry = @[
             @[@"Gradient Linear",
               @"Gradient Radial",
-              @"Gradient Angular"],
+              @"Gradient Angular",
+              @"Gradient Style"],
             @[@"Texture Image"],
         ];
     }

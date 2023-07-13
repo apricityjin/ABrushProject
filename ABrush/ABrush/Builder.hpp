@@ -45,6 +45,9 @@ namespace ABrush
         /// memory: |type|start|end|
         ///         | 4B | 8B  |8B |
         void buildAngularGradient(RenderData &data, Gradient &g, APoint &start, APoint &end);
+        
+        void buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, GradientStyle);
+        void buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, float controlRadius, GradientStyle);
 
         Color fillColor;
         Color strokeColor;

@@ -67,7 +67,6 @@ Gradient::Gradient()
         }
         // count >= 2
         // 默认切割256份
-        size = 256;
         buffer = (uint * )calloc(size, sizeof(uint));
         uint * pointer = buffer;
         int l = 0, r = 1;
