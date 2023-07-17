@@ -10,10 +10,11 @@
 
 #include <simd/simd.h>
 
-typedef enum : uint32_t{
+typedef enum : uint32_t {
     GradientStyleLinear  = 0,
     GradientStyleRadial  = 1,
     GradientStyleAngular = 2,
+    GradientStyleDiamond = 3,
 } GradientStyle;
 
 typedef struct {
@@ -26,9 +27,17 @@ typedef struct {
 typedef struct {
     uint32_t colorSize;
     uint32_t style; // GradientStyle
-    float x1, y1,
-    x2, y2,
-    x3, y3;
+    union {
+        struct {
+            float sx, shy,
+            shx, sy,
+            tx, ty;
+        };
+        struct {
+            simd_float2x2 mat;
+            simd_float2 tranlate;
+        };
+    }; // 内存对齐
 } GradientData;
 
 #endif /* ABShaderTypes_h */

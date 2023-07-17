@@ -6,6 +6,7 @@
 //
 
 #include "Builder.hpp"
+#include "Affine.hpp"
 #include <simd/simd.h>
 
 namespace ABrush
@@ -155,32 +156,29 @@ void Builder::buildAngularGradient(RenderData &data, Gradient &g, APoint &start,
 
 void Builder::buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, GradientStyle style)
 {
-    data.gradientData = (GradientData *)malloc(sizeof(GradientData));
-    data.gradientData->x1 = start.x;
-    data.gradientData->y1 = start.y;
-    data.gradientData->x2 = end.x;
-    data.gradientData->y2 = end.y;
-    APoint p = (end-start);
-    data.gradientData->x3 = -p.y + start.x;
-    data.gradientData->y3 = p.x + start.y;
-    data.gradientData->colorSize = g.size;
-    data.gradientData->style = style;
-    data.colorsLut = g.buildLut();
+    buildGradient(data, g, start, end, (end - start).length(), style);
 }
 
 void Builder::buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, float controlRadius, GradientStyle style)
 {
     data.gradientData = (GradientData *)malloc(sizeof(GradientData));
-    data.gradientData->x1 = start.x;
-    data.gradientData->y1 = start.y;
-    data.gradientData->x2 = end.x;
-    data.gradientData->y2 = end.y;
-    APoint p = (end-start).normalized() * controlRadius;
-    data.gradientData->x3 = -p.y + start.x;
-    data.gradientData->y3 = p.x + start.y;
+    APoint p = end - start;
+    float scaleX = p.length(), scaleY = controlRadius, // scale
+    rotation = atan2(p.y, p.x),
+    tx = start.x, ty = start.y;
+    if (style == GradientStyleAngular) { rotation += M_PI; }
+    Affine a = Affine().scale(scaleX, scaleY).rotate(rotation).translate(tx, ty).invert();
+    data.gradientData->sx = a.sx;
+    data.gradientData->shy = a.shy;
+    data.gradientData->shx = a.shx;
+    data.gradientData->sy = a.sy;
+    data.gradientData->tx = a.tx;
+    data.gradientData->ty = a.ty;
+//    data.gradientData->matrix = simd_float2x2(a.sx, a.shy, a.shx, a.sy);
+//    data.gradientData->translate = simd_float2(a.tx, a.ty);
     data.gradientData->colorSize = g.size;
     data.gradientData->style = style;
-    data.colorsLut = g.buildLut();
+    data.colorLuT = g.buildLut();
 }
 
 }

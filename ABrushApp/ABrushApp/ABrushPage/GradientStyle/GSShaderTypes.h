@@ -8,6 +8,8 @@
 #ifndef GSShaderTypes_h
 #define GSShaderTypes_h
 
+#include <simd/simd.h>
+
 typedef enum GSVertexInputIndex {
     GSVertexInputIndexVertices     = 0,
     GSVertexInputIndexViewportSize = 1,
@@ -23,14 +25,23 @@ typedef enum : uint32_t {
     GSGradientStyleLinear  = 0,
     GSGradientStyleRadial  = 1,
     GSGradientStyleAngular = 2,
+    GSGradientStyleDiamond = 3,
 } GSGradientStyle;
 
 typedef struct {
     uint32_t colorSize;
     uint32_t style;
-    float x1, y1,
-    x2, y2,
-    x3, y3;
+    union {
+        struct {
+            float sx, shy,
+            shx, sy,
+            tx, ty;
+        };
+        struct {
+            simd_float2x2 mat;
+            simd_float2 tranlate;
+        };
+    };
 } GSGradientData;
 
 typedef struct {

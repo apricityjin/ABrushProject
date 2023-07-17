@@ -19,16 +19,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "43FCF7D1-DC10-4D07-8627-9253A229AA03"
+            uuid = "9891C64B-4084-4A0D-9D63-57A420EB18FE"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ABrushApp/ABrushApp/ABrushPage/TexImg/TexImgViewController.mm"
+            filePath = "ABrush/ABrush/Builder.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "-viewDidLoad"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
+            landmarkName = "Builder::buildGradient(data, g, start, end, controlRadius, style)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

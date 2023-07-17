@@ -30,6 +30,8 @@ using namespace ABrush;
 @property (nonatomic, assign) NSUInteger gradientDataBufferLength;
 @property (nonatomic, assign) NSUInteger colorsLutBufferLength;
 
+@property (nonatomic, strong) UIButton * btn;
+
 @end
 
 @implementation GradientStyleViewController
@@ -42,13 +44,11 @@ using namespace ABrush;
     [self.view insertSubview:self.mtkView atIndex:0];
     self.mtkView.delegate = self;
     self.viewportSize = (vector_float2){static_cast<float>(self.mtkView.drawableSize.width), static_cast<float>(self.mtkView.drawableSize.height)};
-    [self customInit];
-}
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"切换" style:(UIBarButtonItemStylePlain) target:self action:@selector(change)];
 
-- (void)customInit
-{
     [self setupPipeline];
-    [self setup];
+    [self setupWithStyle:GSGradientStyleLinear];
 }
 
 -(void)setupPipeline
@@ -66,14 +66,14 @@ using namespace ABrush;
     self.commandQueue = [self.mtkView.device newCommandQueue];
 }
 
-- (void)setup
+- (void)setupWithStyle:(GSGradientStyle)style
 {
-    APoint p0 = {400.0,  800.0},
-    p1 = {1179.0,  800.0},
-    p2 = {800.0, 1600},
-    p3 = {400.0, 1600.0},
-    start = (p0 + p1 + p2 + p3) / 4,
-    end = p0;
+    APoint p0 = {0.0,  0.0},
+    p1 = {1179.0,  0.0},
+    p2 = {1179.0, 2556.0},
+    p3 = {0.0, 2556.0},
+    start = (p0 + p2) / 2,
+    end = (p1 + p2) / 2;
     
     Path path = Path();
     path
@@ -86,20 +86,16 @@ using namespace ABrush;
     tessellator.fill(flattens, data);
     
     std::vector<Color> colors = {
-        {255, 0, 0, 255},
         {0, 255, 0, 255},
-        {146, 0, 255, 255},
+        {0, 0, 255, 255},
     };
     std::vector<float> locations = {
         0.0,
-        0.5,
         1.0,
     };
     Gradient g = Gradient(colors, locations);
     Builder b = Builder();
-//    b.buildGradient(data, g, start, end, GradientStyleRadial);
-//    b.buildGradient(data, g, start, end, GradientStyleAngular);
-    b.buildGradient(data, g, start, end, 200, GradientStyleRadial);
+    b.buildGradient(data, g, start, end, (GradientStyle)style);
     
     _gradientDataBufferLength = sizeof(GradientData);
     _gradientData = [_mtkView.device newBufferWithBytes:data.gradientData
@@ -107,7 +103,7 @@ using namespace ABrush;
                                                options:MTLResourceStorageModeShared];
     
     _colorsLutBufferLength = sizeof(uint32_t) * data.gradientData->colorSize;
-    _colorsLut = [_mtkView.device newBufferWithBytes:data.colorsLut
+    _colorsLut = [_mtkView.device newBufferWithBytes:data.colorLuT
                                               length:_colorsLutBufferLength
                                              options:MTLResourceStorageModeShared];
     
@@ -179,6 +175,14 @@ using namespace ABrush;
     }
     
     [commandBuffer commit];
+}
+
+#pragma mark - action
+
+- (void)change
+{
+    static uint32_t style = 0;
+    [self setupWithStyle:(GSGradientStyle)(++style % 4)];
 }
 
 @end

@@ -25,7 +25,7 @@ struct RenderData
     // start end | center radius
     vector_float2 * vertexPoint = nullptr;
     GradientData * gradientData = nullptr;
-    uint32_t * colorsLut = nullptr;
+    uint32_t * colorLuT = nullptr;
 };
 
 }

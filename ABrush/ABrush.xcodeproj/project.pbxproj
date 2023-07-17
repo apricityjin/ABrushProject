@@ -46,6 +46,7 @@
 		7324CF802A56978100533EE1 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF642A56978100533EE1 /* stb_image.h */; };
 		7324CF812A56978100533EE1 /* Affine.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF652A56978100533EE1 /* Affine.hpp */; };
 		7324CF822A56978100533EE1 /* Color.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF662A56978100533EE1 /* Color.hpp */; };
+		73B8F4092A64E15C00D714C0 /* ABShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7302F4552A5E421E00466890 /* ABShaderTypes.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -205,6 +206,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73B8F4092A64E15C00D714C0 /* ABShaderTypes.h in Headers */,
 				7324CF772A56978100533EE1 /* mesh.h in Headers */,
 				7324CF812A56978100533EE1 /* Affine.hpp in Headers */,
 				7324CF7B2A56978100533EE1 /* sweep.h in Headers */,
@@ -364,7 +366,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -415,7 +417,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

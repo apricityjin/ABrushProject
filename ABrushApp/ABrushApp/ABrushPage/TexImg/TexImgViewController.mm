@@ -6,8 +6,9 @@
 //
 
 #import "TexImgViewController.h"
-
 #import "ABrush.hpp"
+#import "TIShaderTypes.h"
+
 using namespace ABrush;
 
 @interface TexImgViewController ()
