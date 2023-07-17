@@ -40,4 +40,22 @@ typedef struct {
     }; // 内存对齐
 } GradientData;
 
+typedef struct {
+    int width;
+    int height;
+    int dataSize;
+    int storedChannels;
+    union {
+        struct {
+            float sx, shy,
+            shx, sy,
+            tx, ty;
+        };
+        struct {
+            simd_float2x2 mat;
+            simd_float2 tranlate;
+        };
+    }; // 内存对齐
+} ImageData;
+
 #endif /* ABShaderTypes_h */

@@ -48,6 +48,8 @@ namespace ABrush
         
         void buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, GradientStyle);
         void buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, float controlRadius, GradientStyle);
+        
+        void buildImage(RenderData &data, std::string &filePath);
 
         Color fillColor;
         Color strokeColor;
