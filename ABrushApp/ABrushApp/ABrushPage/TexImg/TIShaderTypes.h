@@ -30,8 +30,13 @@ typedef struct {
 } TIVertex;
 
 typedef struct {
-    int width;
-    int height;
+    union {
+        struct {
+            int width;
+            int height;
+        };
+        simd_int2 size;
+    };
     int dataSize;
     int storedChannels;
     union {

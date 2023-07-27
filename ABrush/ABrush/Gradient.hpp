@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <stdexcept>
+#include "Affine.hpp"
 #include "Color.hpp"
 #include "APoint.hpp"
 
@@ -14,24 +15,44 @@ namespace ABrush
 {
     struct Gradient
     {
-        Gradient(const std::vector<Color> &colors, const std::vector<float> &locations);
-
+        enum class SpreadMethod {
+            Pad,
+            Reflect,
+            Repeat,
+        };
+        enum class GradientType {
+            Linear,
+            Radial,
+            Angular,
+            Diamond,
+        };
+        typedef struct {
+            Color color;
+            float location;
+        } GradientStop;
+        
+        SpreadMethod spreadMethod = SpreadMethod::Pad;
+        GradientType gradientType = GradientType::Linear;
+        Affine affine = Affine(); // 正变换，在主动调用setAffine之后再求逆
+        std::vector<GradientStop> stops;
+        float opacity = 1.0;
+        
         Gradient();
-        /// 线性渐变需要颜色与坐标对应
-        void add(const Color &color, const float &location);
-
-        void sort();
-
-        void swap(auto i, auto j);
-
+        Gradient(const Gradient &g);
+        Gradient& addStop(GradientStop &stop);
+        Gradient& addStop(float location, Color &color);
+        Gradient& addStop(float location, uint8_t r, uint8_t g, uint8_t b);
+        Gradient& addStop(float location, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        void clearStops();
         /// 大小 size，size在一种颜色的情况下为1，在多个颜色情况下为256。
-        uint *buildLut();
-
-        /// 储存颜色
-        std::vector<Color> colors;
-        /// 储存坐标 0.0 ~ 1.0
-        std::vector<float> locations;
-        uint size = 256;
+        uint *buildColorLuT();
+        void resetAffine();
+        void setAffine(Affine &a);
+        
+        void setLinear(APoint &start, APoint &end);
+        void setRadial(APoint &center, float cr, float r, float angle);
+        void setAngular(APoint &center, float cr, float r, float angle);
+        void setDiamond(APoint &center, float cr, float r, float angle);
     };
 
 } // ABrush

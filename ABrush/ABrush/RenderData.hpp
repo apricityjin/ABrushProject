@@ -7,27 +7,18 @@
 
 #include <vector>
 #include <simd/simd.h>
-#include "ABShaderTypes.h"
+#include "Image.hpp"
+#include "Paint.hpp"
 
 namespace ABrush {
 
 struct RenderData
 {
-    
-    RenderData(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices);
-    
     RenderData();
     
-    // 直接将所有的vertices和indices往这两个vector塞
-    std::vector<Vertex> vertices;
+    std::vector<APoint>   vertices;
     std::vector<uint16_t> indices;
-    
-    // start end | center radius
-    vector_float2 * vertexPoint = nullptr;
-    GradientData * gradientData = nullptr;
-    uint32_t * colorLuT = nullptr;
-    
-    
+    Paint paint;
 };
 
 }

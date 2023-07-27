@@ -5,11 +5,35 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-namespace ABrush {
+#include <iostream>
+#include "Affine.hpp"
+
+namespace ABrush
+{
 
 struct Texture
 {
+    enum class TextureType
+    {
+        Plain,
+        Tiled,
+    };
     
+    int width;
+    int height;
+    int stride;
+    void * pixels = nullptr;
+    int owndata;
+    
+    TextureType type;
+    Affine affine;
+    float opacity = 1.0;
+    
+    Texture(int width, int height);
+    Texture(int width, int height, void* pixels);
+    Texture(const Texture &t);
+    void reset();
+    ~Texture();
 };
 
 }

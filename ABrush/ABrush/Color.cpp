@@ -14,6 +14,14 @@ Color::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 : rgba((a << 24) | (b << 16) | (g << 8) | r)
 {}
 
+Color::Color(uint8_t r, uint8_t g, uint8_t b)
+: rgba((0xFF << 24) | (b << 16) | (g << 8) | r)
+{}
+
+Color::Color(uint32_t hex)
+: rgba(hex)
+{}
+
 Color::Color()
 = default;
 
@@ -43,6 +51,13 @@ void Color::setRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     setG(g);
     setB(b);
     setA(a);
+}
+
+void Color::setRGB (uint8_t r, uint8_t g, uint8_t b)
+{
+    setR(r);
+    setG(g);
+    setB(b);
 }
 
 void Color::setR(uint8_t r)

@@ -16,23 +16,26 @@ struct StrokeTessellator
 {
 
     /// 交点风格
-    enum class LineJoin : uint8_t
+    enum class LineJoin
     {
-        LineJoinMiter, // 延长相交
-        LineJoinRound, // 圆弧过渡
-        LineJoinBevel, // 直接连接
+        Miter, // 延长相交
+        Round, // 圆弧过渡
+        Bevel, // 直接连接
     };
     /// 端点风格
-    enum class LineCap : uint8_t
+    enum class LineCap
     {
-        LineCapRound,
-        LineCapSquare,
+        Butt,
+        Round,
+        Square,
     };
-    LineJoin line_join_style = LineJoin::LineJoinBevel;
-    LineCap line_cap_style = LineCap::LineCapSquare;
+    LineJoin line_join_style = LineJoin::Bevel;
+    LineCap line_cap_style = LineCap::Square;
     float line_width = 1.0;
+    float miterlimit;
     
     void stroke(Flatten *flattens, RenderData &data);
+    
 };
 }
 

@@ -11,10 +11,13 @@
 
 namespace ABrush
 {
+
     /// 直接拷贝到 buffer 里就可以使用
     struct Color
     {
         Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        Color(uint8_t r, uint8_t g, uint8_t b);
+        Color(uint32_t hex);
 
         Color();
 
@@ -27,6 +30,7 @@ namespace ABrush
         uint8_t a() const;
         
         void setRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        void setRGB (uint8_t r, uint8_t g, uint8_t b);
 
         void setR(uint8_t r);
         
@@ -38,6 +42,7 @@ namespace ABrush
 
         uint32_t rgba;
     };
+
 } // ABrush
 
 uint32_t rgbaScale(uint32_t rgba, float scale);

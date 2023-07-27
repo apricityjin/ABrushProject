@@ -70,7 +70,7 @@
 		731500EC2A5E85D1002C2711 /* TexImgViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TexImgViewController.mm; sourceTree = "<group>"; };
 		731500EF2A5EC3A5002C2711 /* GradientStyleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientStyleViewController.h; sourceTree = "<group>"; };
 		731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GradientStyleViewController.mm; sourceTree = "<group>"; };
-		731500F52A5EC48C002C2711 /* GSShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GSShaderTypes.h; sourceTree = "<group>"; };
+		731500F52A5EC48C002C2711 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		731500F62A5EC6A0002C2711 /* GSShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GSShaders.metal; sourceTree = "<group>"; };
 		731C917C2A5BE82700EA2DCB /* PathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathViewController.h; sourceTree = "<group>"; };
 		731C917D2A5BE82700EA2DCB /* PathViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PathViewController.mm; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 			children = (
 				731500EF2A5EC3A5002C2711 /* GradientStyleViewController.h */,
 				731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */,
-				731500F52A5EC48C002C2711 /* GSShaderTypes.h */,
+				731500F52A5EC48C002C2711 /* ShaderTypes.h */,
 				731500F62A5EC6A0002C2711 /* GSShaders.metal */,
 			);
 			path = GradientStyle;

@@ -72,7 +72,6 @@ struct APoint
     bool operator!=(const APoint &aVector2) const;
     
     float x, y;
-    static const size_t size = 2;
 };
 
 typedef APoint Normal;

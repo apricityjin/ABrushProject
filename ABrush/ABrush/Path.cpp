@@ -69,12 +69,22 @@ float *Flatten::store() const
 Path::Path()
 = default;
 
+APoint Path::getCurrentPoint()
+{
+    if (points.size() > 0) {
+        return points.back();
+    } else {
+        return start;
+    }
+}
+
 Path &Path::moveTo(APoint &p)
 {
     Contour c;
     c.commandIndex = (uint32_t)commands.size();
     c.pointIndex   = (uint32_t)points.size();
     contours.push_back(c);
+    //
     commands.push_back(Command::MoveTo);
     points.push_back(p);
     return *this;
@@ -87,16 +97,12 @@ Path &Path::lineTo(APoint &p)
     return *this;
 }
 
-Path &Path::close()
+Path &Path::quadTo(APoint &p1, APoint &endPoint)
 {
-    Contour *c = nullptr;
-    if (!contours.empty()) {
-        c = &contours.back();
-    }
-    c->close = true;
-    points.push_back(this->points.at(c->pointIndex));
-    commands.push_back(Command::Close);
-    return *this;
+    APoint cur = points.back();
+    APoint c1 = (cur * 2 + p1) / 3;
+    APoint c2 = (p1 * 2 + endPoint) / 3;
+    return curveTo(c1, c2, endPoint);
 }
 
 Path &Path::curveTo(APoint &p1, APoint &p2, APoint &endPoint)
@@ -105,6 +111,22 @@ Path &Path::curveTo(APoint &p1, APoint &p2, APoint &endPoint)
     points.push_back(p1);
     points.push_back(p2);
     points.push_back(endPoint);
+    return *this;
+}
+
+Path &Path::close()
+{
+    Contour *c = nullptr;
+    if (!contours.empty()) {
+        c = &contours.back();
+    }
+    c->close = true;
+    
+    //
+    if (commands.size() == 0 || commands.back() == Command::Close)
+    { return *this; }
+    points.push_back(start);
+    commands.push_back(Command::Close);
     return *this;
 }
 
@@ -123,8 +145,8 @@ Path &Path::lineTo(float x, float y)
 }
 
 Path &Path::curveTo(float x1, float y1,
-              float x2, float y2,
-              float end_x, float end_y)
+                    float x2, float y2,
+                    float end_x, float end_y)
 {
     APoint p1       = APoint(x1, y1);
     APoint p2       = APoint(x2, y2);
@@ -132,6 +154,7 @@ Path &Path::curveTo(float x1, float y1,
     curveTo(p1, p2, endPoint);
     return *this;
 }
+
 
 Flatten *Path::flatten()
 {
@@ -168,6 +191,13 @@ Flatten *Path::flatten()
         }
     }
     return flattens;
+}
+
+void Path::reset()
+{
+    points.clear();
+    commands.clear();
+    contours.clear();
 }
 
 }

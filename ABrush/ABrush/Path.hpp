@@ -7,7 +7,6 @@
 
 #include <vector>
 #include "APoint.hpp"
-#include "ABShaderTypes.h"
 
 namespace ABrush
 {
@@ -33,33 +32,40 @@ struct Flatten
 
 struct Path
 {
-    enum class Command : uint8_t
-    {
+    enum class Command {
         MoveTo,
         LineTo,
         CurveTo,
         Close,
     };
     
+    std::vector<APoint>   points;
+    std::vector<Command> commands;
+    
+    APoint start = {0, 0};
+    
+    APoint getCurrentPoint();
+    Path &moveTo(APoint &p);
+    Path &lineTo(APoint &p);
+    Path &quadTo(APoint &p1, APoint &endPoint);
+    Path &curveTo(APoint &p1, APoint &p2, APoint &endPoint);
+    Path &close();
+    
+    Path &addRectangle(APoint &p, float width, float height);
+    
+    
+    // 这里以后需要舍弃
     struct Contour
     {
         uint32_t pointIndex   = 0;
         uint32_t commandIndex = 0;
         bool     close        = false;
     };
-    std::vector<APoint>   points;
-    std::vector<Command> commands;
+    
     std::vector<Contour> contours;
     
     Path();
     
-    Path &moveTo(APoint &p);
-    
-    Path &lineTo(APoint &p);
-    
-    Path &close();
-    
-    Path &curveTo(APoint &p1, APoint &p2, APoint &endPoint);
     
     Path &moveTo(float x, float y);
     
@@ -69,7 +75,11 @@ struct Path
                   float x2, float y2,
                   float end_x, float end_y);
     
+    void reset();
+    
     Flatten *flatten();
+    
+    
     
 };
 }

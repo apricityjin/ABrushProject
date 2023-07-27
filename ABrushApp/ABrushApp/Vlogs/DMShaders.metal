@@ -18,7 +18,7 @@ struct RasterizerData
 };
 
 vertex RasterizerData
-vertexShader(uint vertexID [[vertex_id]],
+vertexDMShader(uint vertexID [[vertex_id]],
              constant DMVertext *vertices [[buffer(0)]])
 {
     RasterizerData out;
@@ -28,7 +28,7 @@ vertexShader(uint vertexID [[vertex_id]],
 }
 
 fragment float4
-fragmentShader(RasterizerData in [[stage_in]],
+fragmentDMShader(RasterizerData in [[stage_in]],
                texture2d<half> texture [[texture(0)]])
 {
     constexpr sampler textureSampler (mag_filter::linear,

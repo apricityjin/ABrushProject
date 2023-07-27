@@ -57,15 +57,15 @@
     if (indexPath.section == 0) {
         switch (indexPath.row) {
             case 0:
-                vc = [[PathViewController alloc] init];
-                break;
-            case 1:
-                vc = [[GradientViewController alloc] init];
-                break;
-            case 2:
-                vc = [[AngularViewController alloc] init];
-                break;
-            case 3:
+//                vc = [[PathViewController alloc] init];
+//              break;
+//          case 1:
+//                vc = [[GradientViewController alloc] init];
+//              break;
+//          case 2:
+//                vc = [[AngularViewController alloc] init];
+//                break;
+//            case 3:
                 vc = [[GradientStyleViewController alloc] init];
                 break;
             default:
@@ -74,7 +74,7 @@
     } else if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 0:
-                vc = [[TexImgViewController alloc] init];
+//                vc = [[TexImgViewController alloc] init];
                 break;
                 
             default:
@@ -107,11 +107,15 @@
 {
     if (_dataAry == nil) {
         _dataAry = @[
-            @[@"Gradient Linear",
-              @"Gradient Radial",
-              @"Gradient Angular",
-              @"Gradient Style"],
-            @[@"Texture Image"],
+            @[
+//                @"Gradient Linear",
+//                @"Gradient Radial",
+//                @"Gradient Angular",
+                @"Gradient Style"
+            ],
+//            @[
+//                @"Texture Image"
+//            ],
         ];
     }
     return _dataAry;

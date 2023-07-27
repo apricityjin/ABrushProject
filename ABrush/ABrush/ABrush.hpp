@@ -8,7 +8,6 @@
 #ifndef ABRUSH_HPP
 #define ABRUSH_HPP
 
-#include "ABShaderTypes.h"
 #include "APoint.hpp"
 #include "Affine.hpp"
 #include "Path.hpp"
@@ -19,5 +18,6 @@
 #include "Image.hpp"
 #include "Builder.hpp"
 #include "RenderData.hpp"
+#include "Path.hpp"
 
 #endif

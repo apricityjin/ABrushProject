@@ -67,66 +67,7 @@ using namespace ABrush;
 }
 
 - (void)setup
-{
-    APoint p0 = {400.0,  800.0},
-    p1 = {1179.0,  800.0},
-    p2 = {800.0, 1600},
-    p3 = {400.0, 1600.0},
-    start = (p0 + p1 + p2 + p3) / 4,
-    end = (p1 + p2) / 2;
-    
-    Path path = Path();
-    path
-        .moveTo(p0).lineTo(p1).lineTo(p2).lineTo(p3).close();
-    //        .moveTo(p0).curveTo(p1, p2, p3).close();
-    
-    RenderData data = RenderData();
-    Flatten *flattens = path.flatten();
-    FillTessellator tessellator = FillTessellator();
-    tessellator.fill(flattens, data);
-    
-    std::vector<Color> colors = {
-        {255, 0, 0, 255},
-        {0, 255, 0, 255},
-        {0, 0, 255, 255},
-    };
-    std::vector<float> locations = {
-        0.0,
-        0.5,
-        1.0,
-    };
-    Gradient g = Gradient(colors, locations);
-    Builder b = Builder();
-    //    b.buildLinearGradient(data, g, p0, p2);
-//    b.buildRadialGradient(data, g, p0, p2);
-    b.buildAngularGradient(data, g, start, end);
-    
-    _vertexPointBufferLength = 4 * sizeof(float);
-    _vertexPoint = [_mtkView.device newBufferWithBytes:data.vertexPoint
-                                                length:_vertexPointBufferLength
-                                               options:MTLResourceStorageModeShared];
-    
-    uint * colorsLut = g.buildLut();
-    MTLTextureDescriptor *textureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:g.size height:1 mipmapped:NO];
-    self.texture = [self.mtkView.device newTextureWithDescriptor:textureDescriptor];
-    MTLRegion region = MTLRegionMake2D(0, 0, g.size, 1);
-    [self.texture replaceRegion:region mipmapLevel:0 withBytes:colorsLut bytesPerRow:g.size * sizeof(uint)];
-    
-    //
-    _vertexCount = data.vertices.size();
-    _vertexBufferLength = _vertexCount * sizeof(AGVertex);
-    _vertices = [_mtkView.device newBufferWithBytes:data.vertices.data()
-                                             length:_vertexBufferLength
-                                            options:MTLResourceStorageModeShared];
-    
-    _indexCount = data.indices.size();
-    _indexBufferLength = _indexCount * sizeof(UInt16);
-    _indices = [_mtkView.device newBufferWithBytes:data.indices.data()
-                                            length:_indexBufferLength
-                                           options:MTLResourceStorageModeShared];
-    
-    return;
-}
+{}
 
 #pragma mark - mtk view delegate
 

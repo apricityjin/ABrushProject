@@ -24,7 +24,7 @@ void StrokeTessellator::stroke(Flatten *flattens, RenderData &data)
         vector<uint16_t> elements;
         int element_count = 0;
         
-        if (line_cap_style == LineCap::LineCapRound && !f.isClosed) {
+        if (line_cap_style == LineCap::Round && !f.isClosed) {
             APoint &start = points[0],
             &end = points[1];
             vertices.push_back(start);
@@ -58,7 +58,7 @@ void StrokeTessellator::stroke(Flatten *flattens, RenderData &data)
         }
         
         // LineJoinBevel
-        if (line_join_style == LineJoin::LineJoinBevel) {
+        if (line_join_style == LineJoin::Bevel) {
             // 第一个点
             int vertexIdx = 0;
             APoint &start = points.at(vertexIdx),
@@ -112,7 +112,7 @@ void StrokeTessellator::stroke(Flatten *flattens, RenderData &data)
             }
         }
         // LineJoinMiter
-        else if (line_join_style == LineJoin::LineJoinMiter) {
+        else if (line_join_style == LineJoin::Miter) {
             
             // 第一个点
             int vertexIdx = 0;
@@ -192,7 +192,7 @@ void StrokeTessellator::stroke(Flatten *flattens, RenderData &data)
             }
         }
         // LineJoinRound
-        else if (line_join_style == LineJoin::LineJoinRound) {
+        else if (line_join_style == LineJoin::Round) {
             // 处理起点
             int vertexIdx = 0;
             APoint start = points.at(vertexIdx),
@@ -297,7 +297,7 @@ void StrokeTessellator::stroke(Flatten *flattens, RenderData &data)
             }
         }
         // 结束点的处理
-        if (line_cap_style == LineCap::LineCapRound && !f.isClosed) {
+        if (line_cap_style == LineCap::Round && !f.isClosed) {
             APoint &start = points[ptCount - 2],
             &end = points[ptCount - 1];
             uint32_t end_idx = vertex_count;

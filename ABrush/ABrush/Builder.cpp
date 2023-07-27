@@ -11,8 +11,6 @@
 
 namespace ABrush
 {
-Builder::Builder()
-= default;
 
 void Builder::setFillColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
@@ -39,146 +37,128 @@ void Builder::setLineWidth(float width)
     lineWidth = width;
 }
 
-void Builder::addPath(Path &p)
+void Builder::setPath(Path &p)
 {
     paths.push_back(p);
 }
 
-/// 线性渐变（一一对应进行颜色插值，颜色和坐标数量不对应就取size较小的那个）
-/// 这里取 start为 A，end为 B，需要计算的点为 P，P在 AB上垂点为 F
-/// memory: |type|start|end|
-///         | 4B | 8B  |8B |
-void Builder::buildLinearGradient(RenderData &data, Gradient &g, APoint &start, APoint &end)
+void Builder::fill()
 {
-    data.vertexPoint = (vector_float2 *)calloc(2, sizeof(vector_float2));
-    vector_float2 *pointer = data.vertexPoint;
-    *pointer++ = vector2(start.x,start.y);
-    *pointer++ = vector2(end.x, end.y);
-    /*
-     uint32_t *colorsLut = g.buildLut();
-     uint32_t length = *colorsLut;
-     data.gradientLen = 5 + length;
-     data.gradient = (uint32_t *)calloc(5 + length, sizeof(uint32_t));
-     uint32_t *pointer = data.gradient;
-     *pointer++ = 0;
-     //            *pointer++ = start.x;
-     //            *pointer++ = start.y;
-     //            *pointer++ = end.x;
-     //            *pointer++ = end.y;
-     float d[] = {
-     start.x,
-     start.y,
-     end.x,
-     end.y,
-     };
-     memcpy(pointer, &d, 4 * sizeof(uint32_t));
-     pointer += 4;
-     memcpy(pointer, colorsLut, length * sizeof(uint32_t));
-     
-     
-     float x1 = start.x, y1 = start.y;
-     // 从这里开始，A点坐标为 (0, 0)
-     float x2 = end.x - x1, y2 = end.y - y1;
-     float lenAB = sqrt(x2 * x2 + y2 * y2);
-     
-     // 用苹果14作为例子，屏幕分辨率：2532 x 1170，逻辑分辨率：844 x 390 -> (y, x)
-     uint32_t *tex = (uint32_t *) calloc(844 * 390, sizeof(uint32_t));
-     uint32_t *pointer = tex;
-     for (float y = 0.0; y < 844.0; ++y) {
-     for (float x = 0.0; x < 390.0; ++x) {
-     float x0 = x - x1, y0 = y - y1;
-     float costheta = x2 / lenAB, sintheta = y2 / lenAB;
-     float k = (x0 * costheta + y0 * sintheta) / lenAB; // k -> [0.0, 1.0]
-     if (k > 1.0) {
-     k = 1.0;
-     } else if (k < 0.0) {
-     k = 0.0;
-     }
-     //                    uint32_t idx = size * k + 0.5; // 四舍五入
-     //                    uint32_t rgba = *(gradientColorsBuffer + idx);
-     //                    *pointer++ = rgba;
-     }
-     }
-     */
+    data.vertices.clear();
+    data.indices.clear();
+    Flatten *flattens = paths.back().flatten();
+    FillTessellator tess = FillTessellator();
+    tess.fill(flattens, data);
 }
 
-/// 径向渐变（颜色沿由一个中心点向外的半径方向渐变。）
-/// memory: |type|start|end|
-///         | 4B | 8B  |8B |
-void Builder::buildRadialGradient(RenderData &data, Gradient &g, APoint &start, APoint &end)
+void Builder::stroke()
 {
-    data.vertexPoint = (vector_float2 *)calloc(2, sizeof(vector_float2));
-    vector_float2 *pointer = data.vertexPoint;
-    *pointer++ = vector2(start.x,start.y);
-    *pointer++ = vector2(end.x, end.y);
-    /*
-     uint32_t *colorsLut = g.buildLut();
-     uint32_t length = *colorsLut;
-     data.gradientLen = 4 + length;
-     data.gradient = (uint32_t *)calloc(4 + length, sizeof(uint32_t));
-     uint32_t *pointer = data.gradient;
-     *pointer++ = 1;
-     //            *pointer++ = center.x;
-     //            *pointer++ = center.y;
-     //            *pointer++ = radius;
-     float d[] = {
-     center.x,
-     center.y,
-     radius,
-     };
-     memcpy(pointer, &d, 3 * sizeof(uint32_t));
-     pointer += 3;
-     memcpy(pointer, colorsLut, length * sizeof(uint32_t));
-     
-     // 用苹果14作为例子，屏幕分辨率：2532 x 1170，逻辑分辨率：844 x 390 -> (y, x)
-     uint32_t *tex = (uint32_t *) calloc(844 * 390, sizeof(uint32_t));
-     uint32_t *pointer = tex;
-     float x1 = center.x, y1 = center.y;
-     for (float y = 0.0; y < 844.0; ++y) {
-     for (float x = 0.0; x < 390.0; ++x) {
-     float len = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
-     float k = len > radius ? 1.0 : len / radius;
-     //                    uint32_t idx = size * k + 0.5; // 四舍五入
-     //                    uint32_t rgba = *(gradientColorsBuffer + idx);
-     //                    *pointer++ = rgba;
-     }
-     }
-     */
+    data.vertices.clear();
+    data.indices.clear();
+    Flatten *flattens = paths.back().flatten();
+    StrokeTessellator tess = StrokeTessellator();
+    tess.line_width = lineWidth;
+    tess.line_cap_style = strokeCap;
+    tess.line_join_style = strokeJoin;
+    tess.stroke(flattens, data);
 }
 
-void Builder::buildAngularGradient(RenderData &data, Gradient &g, APoint &start, APoint &end)
+void Builder::setColor(Color &color)
 {
-    data.vertexPoint = (vector_float2 *)calloc(2, sizeof(vector_float2));
-    vector_float2 *pointer = data.vertexPoint;
-    *pointer++ = vector2(start.x,start.y);
-    *pointer++ = vector2(end.x, end.y);
+    Paint p;
+    p.type = Paint::PaintType::Color;
+    p.color = color;
+    data.paint = p;
 }
 
-void Builder::buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, GradientStyle style)
+void Builder:: setGradient(Gradient &gradient)
 {
-    buildGradient(data, g, start, end, (end - start).length(), style);
+    Paint p;
+    p.type = Paint::PaintType::Gradient;
+    p.gradient = new Gradient;
+    *p.gradient = gradient;
+    data.paint = p;
 }
 
-void Builder::buildGradient(RenderData &data, Gradient &g, APoint &start, APoint &end, float controlRadius, GradientStyle style)
+void Builder:: setTexture(Texture &texture)
 {
-    data.gradientData = (GradientData *)malloc(sizeof(GradientData));
-    APoint p = end - start;
-    float scaleX = p.length(), scaleY = controlRadius, // scale
-    rotation = atan2(p.y, p.x),
-    tx = start.x, ty = start.y;
-    if (style == GradientStyleAngular) { rotation += M_PI; }
-    Affine a = Affine().scale(scaleX, scaleY).rotate(rotation).translate(tx, ty).invert();
-    data.gradientData->sx = a.sx;
-    data.gradientData->shy = a.shy;
-    data.gradientData->shx = a.shx;
-    data.gradientData->sy = a.sy;
-    data.gradientData->tx = a.tx;
-    data.gradientData->ty = a.ty;
-//    data.gradientData->matrix = simd_float2x2(a.sx, a.shy, a.shx, a.sy);
-//    data.gradientData->translate = simd_float2(a.tx, a.ty);
-    data.gradientData->colorSize = g.size;
-    data.gradientData->style = style;
-    data.colorLuT = g.buildLut();
+    Paint p;
+    p.type = Paint::PaintType::Texture;
+    p.texture = (Texture *)malloc(sizeof(Texture));
+    *p.texture = texture;
+    data.paint = p;
+}
+
+void Builder::build(void ** ver, void ** tex)
+{
+    // vertices.size  + indices.size + verticesLength + indicesLength + vertices + indices
+    size_t verticesLength = data.vertices.size() * sizeof(APoint);
+    size_t indicesLength = data.indices.size() * sizeof(uint16_t);
+    int *buffer = (int *)malloc(16 + verticesLength + indicesLength);
+    int *pointer = buffer;
+    *pointer++ = (int)data.vertices.size();
+    *pointer++ = (int)data.indices.size();
+    *pointer++ = (int)verticesLength;
+    *pointer++ = (int)indicesLength;
+    memcpy(pointer, data.vertices.data(), verticesLength);
+    pointer += data.vertices.size() * 2;
+    memcpy(pointer, data.indices.data(), indicesLength);
+    *ver = buffer;
+    
+    if (data.paint.type == Paint::PaintType::Color) {
+        Color * colorBuffer = (Color *)malloc(sizeof(Color));
+        Color * colorPointer = colorBuffer;
+        *colorPointer = data.paint.color;
+        *tex = colorBuffer;
+    }
+    else if (data.paint.type == Paint::PaintType::Gradient) {
+        GradientData * gdBuffer = (GradientData *)malloc(sizeof(GradientData));
+        GradientData * gdPointer = gdBuffer;
+        switch ( data.paint.gradient->spreadMethod ) {
+            case Gradient::SpreadMethod::Pad:
+                gdPointer->spread = 0;
+                break;
+            case Gradient::SpreadMethod::Reflect:
+                gdPointer->spread = 1;
+                break;
+            case Gradient::SpreadMethod::Repeat:
+                gdPointer->spread = 2;
+                break;
+        }
+        switch (data.paint.gradient->gradientType) {
+            case Gradient::GradientType::Linear:
+                gdPointer->type = 0;
+                break;
+            case Gradient::GradientType::Radial:
+                gdPointer->type = 1;
+                break;
+            case Gradient::GradientType::Angular:
+                gdPointer->type = 2;
+                break;
+            case Gradient::GradientType::Diamond:
+                gdPointer->type = 3;
+                break;
+            default:
+                break;
+        }
+        gdPointer->a = data.paint.gradient->affine;
+        gdPointer->a.invert();
+        memcpy(gdPointer->colorLuT, data.paint.gradient->buildColorLuT(), sizeof(uint32_t) * 256);
+        *tex = gdPointer;
+    }
+    else if (data.paint.type == Paint::PaintType::Texture) {
+        size_t pixelsSize = data.paint.texture->height * data.paint.texture->stride;
+        TextureData * tdBuffer = (TextureData *)malloc(sizeof(TextureData) + pixelsSize);
+        TextureData * tdPointer = tdBuffer;
+        tdPointer->width = data.paint.texture->width;
+        tdPointer->height = data.paint.texture->height;
+        tdPointer->a = data.paint.texture->affine;
+        tdPointer->a.invert();
+        tdPointer += 1;
+        memcpy(tdPointer, data.paint.texture->pixels, pixelsSize);
+        *tex = tdBuffer;
+    }
+    else { /*  */ }
 }
 
 }

@@ -12,7 +12,6 @@ using namespace metal;
 
 struct TIRasterizerData {
     float4 position [[position]];
-    float2 uv;
 };
 
 vertex TIRasterizerData
@@ -26,7 +25,7 @@ vertexTIShader(uint vertexID [[vertex_id]],
     out.position = float4(0.0, 0.0, 0.0, 1.0);
     out.position.xy = (pixelSpacePosition / viewportSize) * 2 - 1; // y = 2 * x - 1
     out.position.y = -out.position.y;
-    out.uv = vertices[vertexID].uv;
+    
     return out;
 }
 
@@ -37,13 +36,13 @@ fragmentTIShader(TIRasterizerData in [[stage_in]],
                  texture2d<half> texture [[texture(0)]])
 {
     TIImageData data = *imageData;
-    //    float2 pt = in.position.xy * float2x2(data.sx, data.shy, data.shx, data.sx) + float2(data.tx, data.ty);
     float2 pt = in.position.xy * data.mat + data.tranlate;
+    float2 uv = pt / float2( data.size );
     
     constexpr sampler textureSampler (mag_filter::linear,
                                       min_filter::linear); // sampler是采样器
     
-    half4 colorSample = texture.sample(textureSampler, in.uv); // 得到纹理对应位置的颜色
+    half4 colorSample = texture.sample(textureSampler, uv); // 得到纹理对应位置的颜色
     
     return colorSample;
 }

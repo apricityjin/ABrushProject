@@ -28,10 +28,10 @@
 @property (strong, nonatomic) UIButton * nextButton;
 @property (strong, nonatomic) UIButton * playButton;
 @property (strong, nonatomic) UIButton * previousButton;
-@property (strong, nonatomic) UIButton * goforwardButton;
-@property (strong, nonatomic) UIButton * gobackwardButton;
+//@property (strong, nonatomic) UIButton * goforwardButton;
+//@property (strong, nonatomic) UIButton * gobackwardButton;
 @property (strong, nonatomic) UIButton * closeButton;
-@property (strong, nonatomic) UISlider * timelineSlider;
+//@property (strong, nonatomic) UISlider * timelineSlider;
 
 @property (nonatomic, assign) vector_uint2 viewportSize;
 @property (nonatomic, strong) id<MTLRenderPipelineState> pipelineState;
@@ -81,6 +81,7 @@
     [self.playerItem addOutput:self.videoOutput];
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self.player play];
+    self.playButton.selected = YES;
 }
 
 - (void)setupViews {
@@ -88,13 +89,13 @@
     [self.view addSubview:self.previousButton];
     [self.view addSubview:self.playButton];
     [self.view addSubview:self.nextButton];
-    [self.view addSubview:self.timelineSlider];
-    [self.view addSubview:self.gobackwardButton];
-    [self.view addSubview:self.goforwardButton];
+//    [self.view addSubview:self.timelineSlider];
+//    [self.view addSubview:self.gobackwardButton];
+//    [self.view addSubview:self.goforwardButton];
     
     CGFloat padding = 20.;
     CGFloat maxWidth = UIScreen.mainScreen.bounds.size.width - padding * 2;
-    CGFloat buttonWidth = (maxWidth - 4 * padding) / 5;
+    CGFloat buttonWidth = (maxWidth - 2 * padding) / 3;
     
     [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view);
@@ -102,46 +103,37 @@
         make.size.mas_equalTo(CGSizeMake(44, 44));
     }];
 
-    [self.timelineSlider mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.view).mas_offset(padding);
-        make.right.mas_equalTo(self.view).mas_offset(-padding);
-        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom);
-    }];
+//    [self.timelineSlider mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.view).mas_offset(padding);
+//        make.right.mas_equalTo(self.view).mas_offset(-padding);
+//        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom);
+//    }];
     [self.previousButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view).mas_offset(padding);
-        make.bottom.mas_equalTo(self.timelineSlider.mas_top);
+        make.bottom.mas_equalTo(self.view.mas_bottom).offset(-50);
         make.width.height.mas_equalTo(buttonWidth);
     }];
-    [self.gobackwardButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.previousButton.mas_right).mas_offset(padding);
-        make.bottom.mas_equalTo(self.timelineSlider.mas_top);
-        make.width.height.mas_equalTo(buttonWidth);
-    }];
+//    [self.gobackwardButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.previousButton.mas_right).mas_offset(padding);
+//        make.bottom.mas_equalTo(self.view.mas_bottom).offset(-50);
+//        make.width.height.mas_equalTo(buttonWidth);
+//    }];
     [self.playButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.gobackwardButton.mas_right).mas_offset(padding);
-        make.bottom.mas_equalTo(self.timelineSlider.mas_top);
+        make.left.mas_equalTo(self.previousButton.mas_right).mas_offset(padding);
+        make.bottom.mas_equalTo(self.view.mas_bottom).offset(-50);
         make.width.height.mas_equalTo(buttonWidth);
     }];
-    [self.goforwardButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.playButton.mas_right).mas_offset(padding);
-        make.bottom.mas_equalTo(self.timelineSlider.mas_top);
-        make.width.height.mas_equalTo(buttonWidth);
-    }];
+//    [self.goforwardButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.playButton.mas_right).mas_offset(padding);
+//        make.bottom.mas_equalTo(self.view.mas_bottom).offset(-50);
+//        make.width.height.mas_equalTo(buttonWidth);
+//    }];
     [self.nextButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.goforwardButton.mas_right).mas_offset(padding);
-        make.bottom.mas_equalTo(self.timelineSlider.mas_top);
+        make.left.mas_equalTo(self.playButton.mas_right).mas_offset(padding);
+        make.bottom.mas_equalTo(self.view.mas_bottom).offset(-50);
         make.width.height.mas_equalTo(buttonWidth);
     }];
     
-    __weak typeof(self) weakSelf = self;
-    [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, 600) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-        CGFloat durationInSeconds = CMTimeGetSeconds(weakSelf.player.currentItem.duration);
-        if (isfinite(durationInSeconds)) {
-            CGFloat timeInSeconds = CMTimeGetSeconds(time);
-            CGFloat value = (timeInSeconds / durationInSeconds);
-            [weakSelf.timelineSlider setValue:value animated:YES];
-        }
-    }];
     [[NSNotificationCenter defaultCenter]
      addObserver:self
      selector:@selector(playerDidFinishPlaying:)
@@ -161,6 +153,7 @@
 
 - (void)playerDidFinishPlaying:(NSNotification *)notification {
     AVPlayerItem * playerItem = notification.object;
+    self.playButton.selected = NO;
     [playerItem seekToTime:kCMTimeZero completionHandler:^(BOOL finished) {
         
     }];
@@ -244,8 +237,8 @@
 - (void)setupPipeline
 {
     id<MTLLibrary> defaultLibrary = [self.mtkView.device newDefaultLibrary]; // .metal
-    id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"]; // 顶点shader，vertexShader是函数名
-    id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"]; // 片元shader，samplingShader是函数名
+    id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexDMShader"]; // 顶点shader，vertexShader是函数名
+    id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentDMShader"]; // 片元shader，samplingShader是函数名
     
     MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
     pipelineStateDescriptor.vertexFunction = vertexFunction;
@@ -407,29 +400,29 @@
     return _previousButton;
 }
 
-- (UIButton *)goforwardButton {
-    if (_goforwardButton == nil) {
-        _goforwardButton = [[UIButton alloc] init];
-        [_goforwardButton addTarget:self
-                         action:@selector(goforwardButtonDidClicked:)
-               forControlEvents:(UIControlEventTouchUpInside)];
-        [_goforwardButton setImage:[UIImage systemImageNamed:@"goforward.5"]
-                      forState:(UIControlStateNormal)];
-    }
-    return _goforwardButton;
-}
-
-- (UIButton *)gobackwardButton {
-    if (_gobackwardButton == nil) {
-        _gobackwardButton = [[UIButton alloc] init];
-        [_gobackwardButton addTarget:self
-                              action:@selector(gobackwardButtonDidClicked:)
-               forControlEvents:(UIControlEventTouchUpInside)];
-        [_gobackwardButton setImage:[UIImage systemImageNamed:@"gobackward.5"]
-                      forState:(UIControlStateNormal)];
-    }
-    return _gobackwardButton;
-}
+//- (UIButton *)goforwardButton {
+//    if (_goforwardButton == nil) {
+//        _goforwardButton = [[UIButton alloc] init];
+//        [_goforwardButton addTarget:self
+//                         action:@selector(goforwardButtonDidClicked:)
+//               forControlEvents:(UIControlEventTouchUpInside)];
+//        [_goforwardButton setImage:[UIImage systemImageNamed:@"goforward.5"]
+//                      forState:(UIControlStateNormal)];
+//    }
+//    return _goforwardButton;
+//}
+//
+//- (UIButton *)gobackwardButton {
+//    if (_gobackwardButton == nil) {
+//        _gobackwardButton = [[UIButton alloc] init];
+//        [_gobackwardButton addTarget:self
+//                              action:@selector(gobackwardButtonDidClicked:)
+//               forControlEvents:(UIControlEventTouchUpInside)];
+//        [_gobackwardButton setImage:[UIImage systemImageNamed:@"gobackward.5"]
+//                      forState:(UIControlStateNormal)];
+//    }
+//    return _gobackwardButton;
+//}
 
 - (UIButton *)closeButton {
     if (_closeButton == nil) {
@@ -443,14 +436,14 @@
     return _closeButton;
 }
 
-- (UISlider *)timelineSlider {
-    if (_timelineSlider == nil) {
-        _timelineSlider = [[UISlider alloc] init];
-        [_timelineSlider addTarget:self action:@selector(timelineSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-        [_timelineSlider addTarget:self action:@selector(timelineSliderTouchDown:) forControlEvents:UIControlEventTouchDown];
-        [_timelineSlider addTarget:self action:@selector(timelineSliderTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _timelineSlider;
-}
+//- (UISlider *)timelineSlider {
+//    if (_timelineSlider == nil) {
+//        _timelineSlider = [[UISlider alloc] init];
+//        [_timelineSlider addTarget:self action:@selector(timelineSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+//        [_timelineSlider addTarget:self action:@selector(timelineSliderTouchDown:) forControlEvents:UIControlEventTouchDown];
+//        [_timelineSlider addTarget:self action:@selector(timelineSliderTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    return _timelineSlider;
+//}
 
 @end

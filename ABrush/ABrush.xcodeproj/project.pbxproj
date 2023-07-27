@@ -46,11 +46,11 @@
 		7324CF802A56978100533EE1 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF642A56978100533EE1 /* stb_image.h */; };
 		7324CF812A56978100533EE1 /* Affine.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF652A56978100533EE1 /* Affine.hpp */; };
 		7324CF822A56978100533EE1 /* Color.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 7324CF662A56978100533EE1 /* Color.hpp */; };
-		73B8F4092A64E15C00D714C0 /* ABShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7302F4552A5E421E00466890 /* ABShaderTypes.h */; };
+		73B8F48E2A6CFD6500D714C0 /* Paint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 73B8F48C2A6CFD6400D714C0 /* Paint.cpp */; };
+		73B8F48F2A6CFD6500D714C0 /* Paint.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 73B8F48D2A6CFD6400D714C0 /* Paint.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7302F4552A5E421E00466890 /* ABShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ABShaderTypes.h; sourceTree = "<group>"; };
 		731C91EF2A5C305C00EA2DCB /* APoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = APoint.cpp; sourceTree = "<group>"; };
 		731C91F12A5C32FA00EA2DCB /* Affine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Affine.cpp; sourceTree = "<group>"; };
 		731C91F32A5C346E00EA2DCB /* Path.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Path.cpp; sourceTree = "<group>"; };
@@ -91,6 +91,8 @@
 		7324CF642A56978100533EE1 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		7324CF652A56978100533EE1 /* Affine.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Affine.hpp; sourceTree = "<group>"; };
 		7324CF662A56978100533EE1 /* Color.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Color.hpp; sourceTree = "<group>"; };
+		73B8F48C2A6CFD6400D714C0 /* Paint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Paint.cpp; sourceTree = "<group>"; };
+		73B8F48D2A6CFD6400D714C0 /* Paint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Paint.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,7 +150,8 @@
 				731C91F52A5C35B000EA2DCB /* StrokeTessellator.cpp */,
 				7324CF4F2A56978100533EE1 /* Texture.hpp */,
 				731C92012A5CE97300EA2DCB /* Texture.cpp */,
-				7302F4552A5E421E00466890 /* ABShaderTypes.h */,
+				73B8F48D2A6CFD6400D714C0 /* Paint.hpp */,
+				73B8F48C2A6CFD6400D714C0 /* Paint.cpp */,
 			);
 			path = ABrush;
 			sourceTree = "<group>";
@@ -206,13 +209,13 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73B8F4092A64E15C00D714C0 /* ABShaderTypes.h in Headers */,
 				7324CF772A56978100533EE1 /* mesh.h in Headers */,
 				7324CF812A56978100533EE1 /* Affine.hpp in Headers */,
 				7324CF7B2A56978100533EE1 /* sweep.h in Headers */,
 				7324CF7A2A56978100533EE1 /* priorityq.h in Headers */,
 				7324CF6E2A56978100533EE1 /* Builder.hpp in Headers */,
 				7324CF722A56978100533EE1 /* tess.h in Headers */,
+				73B8F48F2A6CFD6500D714C0 /* Paint.hpp in Headers */,
 				7324CF692A56978100533EE1 /* StrokeTessellator.hpp in Headers */,
 				7324CF672A56978100533EE1 /* Image.hpp in Headers */,
 				7324CF7E2A56978100533EE1 /* geom.h in Headers */,
@@ -290,6 +293,7 @@
 			files = (
 				7324CF782A56978100533EE1 /* tess.c in Sources */,
 				7324CF7C2A56978100533EE1 /* bucketalloc.c in Sources */,
+				73B8F48E2A6CFD6500D714C0 /* Paint.cpp in Sources */,
 				7324CF752A56978100533EE1 /* sweep.c in Sources */,
 				7324CF7D2A56978100533EE1 /* mesh.c in Sources */,
 				731C91FA2A5C368A00EA2DCB /* RenderData.cpp in Sources */,
