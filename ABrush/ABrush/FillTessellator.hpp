@@ -13,7 +13,7 @@ namespace ABrush
 
 struct FillTessellator
 {
-    void fill(Flatten *flattens, RenderData &data);
+    void fill(Flatten *flattens, RenderDataItem &data);
 };
 
 }

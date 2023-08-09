@@ -19,7 +19,6 @@ Gradient::Gradient(const Gradient &g)
     stops = g.stops;
     affine = g.affine;
     gradientType = g.gradientType;
-    spreadMethod = g.spreadMethod;
     opacity = g.opacity;
 }
 

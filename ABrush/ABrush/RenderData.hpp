@@ -12,13 +12,36 @@
 
 namespace ABrush {
 
-struct RenderData
-{
-    RenderData();
+struct Vertex {
+    union {
+        struct {
+            float x;
+            float y;
+        };
+        vector_float2 position;
+    };
+    float alpha;
+    float z; // 用来显示字体的参数
     
-    std::vector<APoint>   vertices;
+    Vertex();
+    Vertex(vector_float2 position, float alpha);
+};
+
+struct RenderDataItem
+{
+    RenderDataItem();
+    
+    std::vector<Vertex>   vertices;
     std::vector<uint16_t> indices;
     Paint paint;
+};
+
+struct RenderData
+{
+    std::vector<RenderDataItem> items;
+    size_t verticesLength = 0;
+    size_t indicesLength = 0;
+    size_t fragmentLength = 0;
 };
 
 }

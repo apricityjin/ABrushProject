@@ -9,7 +9,14 @@
 
 namespace ABrush {
 
-RenderData::RenderData()
+Vertex::Vertex(vector_float2 position, float alpha)
+: position(position), alpha(alpha)
+{}
+
+Vertex::Vertex()
+{}
+
+RenderDataItem::RenderDataItem()
 =default;
 
 }

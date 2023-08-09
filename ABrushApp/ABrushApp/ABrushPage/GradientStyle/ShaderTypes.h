@@ -40,8 +40,9 @@ typedef enum : int {
 } SpreadMethod;
 
 typedef struct GradientData {
-    int method; // SpreadMethod
+//    int method; // SpreadMethod
     int type; // GradientType
+    int colorLuTIdx;
     union {
         struct {
             float sx, shy,
@@ -88,6 +89,8 @@ typedef struct FragmentData {
 
 typedef struct {
     vector_float2 position; // 空间坐标
+    float alpha;
+    float z;
 } Vertex;
 
 #endif /* GSShaderTypes_h */

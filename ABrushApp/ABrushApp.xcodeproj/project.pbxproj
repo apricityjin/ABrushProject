@@ -11,13 +11,13 @@
 		7302F4542A5D6FE200466890 /* AGShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7302F4532A5D6FE200466890 /* AGShaders.metal */; };
 		731500ED2A5E85D1002C2711 /* TexImgViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731500EC2A5E85D1002C2711 /* TexImgViewController.mm */; };
 		731500F12A5EC3A5002C2711 /* GradientStyleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */; };
-		731500F72A5EC6A0002C2711 /* GSShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 731500F62A5EC6A0002C2711 /* GSShaders.metal */; };
 		731C917E2A5BE82700EA2DCB /* PathViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C917D2A5BE82700EA2DCB /* PathViewController.mm */; };
 		731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 731C91932A5C21D300EA2DCB /* GradientViewController.mm */; };
 		731C92072A5CEAB200EA2DCB /* GShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 731C92062A5CEAB200EA2DCB /* GShaders.metal */; };
 		7323D9DB2A57AF42008F86A1 /* libABrush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7323D9DA2A57AF42008F86A1 /* libABrush.a */; };
 		7324CF892A569A3000533EE1 /* AShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7324CF882A569A3000533EE1 /* AShaders.metal */; };
 		73B8F41F2A6556F600D714C0 /* TIShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 73B8F41E2A6556F600D714C0 /* TIShaders.metal */; };
+		952A24E02A83D175009A15A5 /* GSShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 952A24DE2A83D175009A15A5 /* GSShaders.metal */; };
 		9552C4A02A37366700C61EF1 /* VlogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4962A37366700C61EF1 /* VlogTableViewCell.m */; };
 		9552C4A12A37366700C61EF1 /* DMShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9552C4992A37366700C61EF1 /* DMShaders.metal */; };
 		9552C4A22A37366700C61EF1 /* VlogModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9552C49A2A37366700C61EF1 /* VlogModel.m */; };
@@ -70,8 +70,6 @@
 		731500EC2A5E85D1002C2711 /* TexImgViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TexImgViewController.mm; sourceTree = "<group>"; };
 		731500EF2A5EC3A5002C2711 /* GradientStyleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientStyleViewController.h; sourceTree = "<group>"; };
 		731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GradientStyleViewController.mm; sourceTree = "<group>"; };
-		731500F52A5EC48C002C2711 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
-		731500F62A5EC6A0002C2711 /* GSShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GSShaders.metal; sourceTree = "<group>"; };
 		731C917C2A5BE82700EA2DCB /* PathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathViewController.h; sourceTree = "<group>"; };
 		731C917D2A5BE82700EA2DCB /* PathViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PathViewController.mm; sourceTree = "<group>"; };
 		731C91922A5C21D300EA2DCB /* GradientViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientViewController.h; sourceTree = "<group>"; };
@@ -83,6 +81,8 @@
 		7324CF882A569A3000533EE1 /* AShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = AShaders.metal; sourceTree = "<group>"; };
 		73B8F41D2A6556B400D714C0 /* TIShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TIShaderTypes.h; sourceTree = "<group>"; };
 		73B8F41E2A6556F600D714C0 /* TIShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = TIShaders.metal; sourceTree = "<group>"; };
+		952A24DE2A83D175009A15A5 /* GSShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GSShaders.metal; sourceTree = "<group>"; };
+		952A24DF2A83D175009A15A5 /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		9552C4902A3735B900C61EF1 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		9552C4962A37366700C61EF1 /* VlogTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VlogTableViewCell.m; sourceTree = "<group>"; };
 		9552C4972A37366700C61EF1 /* VlogsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VlogsViewController.h; sourceTree = "<group>"; };
@@ -199,10 +199,10 @@
 		731500EE2A5EC395002C2711 /* GradientStyle */ = {
 			isa = PBXGroup;
 			children = (
+				952A24DE2A83D175009A15A5 /* GSShaders.metal */,
+				952A24DF2A83D175009A15A5 /* ShaderTypes.h */,
 				731500EF2A5EC3A5002C2711 /* GradientStyleViewController.h */,
 				731500F02A5EC3A5002C2711 /* GradientStyleViewController.mm */,
-				731500F52A5EC48C002C2711 /* ShaderTypes.h */,
-				731500F62A5EC6A0002C2711 /* GSShaders.metal */,
 			);
 			path = GradientStyle;
 			sourceTree = "<group>";
@@ -528,6 +528,7 @@
 				731C91942A5C21D300EA2DCB /* GradientViewController.mm in Sources */,
 				7302F4502A5D5A0700466890 /* AngularViewController.mm in Sources */,
 				95D101C52A330B6100BBA838 /* ABrushViewController.m in Sources */,
+				952A24E02A83D175009A15A5 /* GSShaders.metal in Sources */,
 				95D101BF2A330B6100BBA838 /* AppDelegate.m in Sources */,
 				7302F4542A5D6FE200466890 /* AGShaders.metal in Sources */,
 				9552C4E02A37375700C61EF1 /* NSArray+MASAdditions.m in Sources */,
@@ -553,7 +554,6 @@
 				9552C5042A3738A100C61EF1 /* ShowImagesCollectionViewCell.m in Sources */,
 				9552C4DE2A37375700C61EF1 /* MASConstraintMaker.m in Sources */,
 				9552C4DF2A37375700C61EF1 /* MASLayoutConstraint.m in Sources */,
-				731500F72A5EC6A0002C2711 /* GSShaders.metal in Sources */,
 				9552C5052A3738A100C61EF1 /* ImageBrowseViewController.m in Sources */,
 				73B8F41F2A6556F600D714C0 /* TIShaders.metal in Sources */,
 				9552C50A2A3738A100C61EF1 /* ImagesTableViewController.m in Sources */,

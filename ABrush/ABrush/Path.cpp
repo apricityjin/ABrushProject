@@ -54,7 +54,7 @@ void bezier(std::vector<APoint> &bezierPoints,
     bezierPoints.emplace_back(end);
 }
 
-float *Flatten::store() const
+void *Flatten::store() const
 {
     size_t points_count = points.size();
     float  *m;
@@ -68,15 +68,6 @@ float *Flatten::store() const
 
 Path::Path()
 = default;
-
-APoint Path::getCurrentPoint()
-{
-    if (points.size() > 0) {
-        return points.back();
-    } else {
-        return start;
-    }
-}
 
 Path &Path::moveTo(APoint &p)
 {
@@ -125,7 +116,7 @@ Path &Path::close()
     //
     if (commands.size() == 0 || commands.back() == Command::Close)
     { return *this; }
-    points.push_back(start);
+//    points.push_back(start);
     commands.push_back(Command::Close);
     return *this;
 }
@@ -184,9 +175,9 @@ Flatten *Path::flatten()
                 ptIdx += 3;
                 break;
             case Command::Close:
-                flattens[PathCount].points.push_back(flattens[PathCount].points.at(0));
+//                flattens[PathCount].points.push_back(flattens[PathCount].points.at(0));
                 flattens[PathCount].isClosed = true;
-                ptIdx++;
+//                ptIdx++;
                 break;
         }
     }

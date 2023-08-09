@@ -15,11 +15,6 @@ namespace ABrush
 {
     struct Gradient
     {
-        enum class SpreadMethod {
-            Pad,
-            Reflect,
-            Repeat,
-        };
         enum class GradientType {
             Linear,
             Radial,
@@ -31,7 +26,6 @@ namespace ABrush
             float location;
         } GradientStop;
         
-        SpreadMethod spreadMethod = SpreadMethod::Pad;
         GradientType gradientType = GradientType::Linear;
         Affine affine = Affine(); // 正变换，在主动调用setAffine之后再求逆
         std::vector<GradientStop> stops;

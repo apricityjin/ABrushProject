@@ -12,6 +12,7 @@ using namespace metal;
 
 struct RasterizerData {
     float4 position [[position]];
+    float alpha;
 };
 
 vertex RasterizerData
@@ -19,12 +20,21 @@ vertexShader(uint vertexID [[vertex_id]],
                constant Vertex * vertices [[buffer(VertexInputIndexVertices)]],
                constant float2 * viewportSizePointer [[buffer(VertexInputIndexViewportSize)]])
 {
+//    RasterizerData out;
+//    float2 viewportSize = float2(*viewportSizePointer);
+//    float2 pixelSpacePosition = vertices[vertexID].position.xy;
+//    out.position = float4(0.0, 0.0, 0.0, 1.0);
+//    out.position.xy = (pixelSpacePosition / viewportSize) * 2 - 1; // y = 2 * x - 1
+//    out.position.y = -out.position.y;
+//    return out;
     RasterizerData out;
     float2 viewportSize = float2(*viewportSizePointer);
-    float2 pixelSpacePosition = vertices[vertexID].position.xy;
+    Vertex vtx = vertices[vertexID];
+    float2 pixelSpacePosition = vtx.position.xy;
     out.position = float4(0.0, 0.0, 0.0, 1.0);
     out.position.xy = (pixelSpacePosition / viewportSize) * 2 - 1; // y = 2 * x - 1
     out.position.y = -out.position.y;
+    out.alpha = vtx.alpha;
     return out;
 }
 
@@ -32,17 +42,18 @@ fragment float4
 fragmentShader(RasterizerData in [[stage_in]],
                  constant float2 * viewportSizePointer [[buffer(FragmentInputIndexViewportSize)]],
                  constant FragmentData * fragmentData [[buffer(FragmentInputIndexData)]],
-                 texture2d<half> texture [[texture(0)]])
+                 texture2d<float> texture [[texture(0)]])
 {
     FragmentData data = *fragmentData;
     if (data.type == PaintTypeColor) {
-        uint32_t color = data.c;
-        return {
-            ((color >>  0) & 0xFF) / 255.0,
-            ((color >>  8) & 0xFF) / 255.0,
-            ((color >> 16) & 0xFF) / 255.0,
-            ((color >> 24) & 0xFF) / 255.0,
+        uint32_t c = data.c;
+        float4 color = {
+            ((c >>  0) & 0xFF) / 255.0,
+            ((c >>  8) & 0xFF) / 255.0,
+            ((c >> 16) & 0xFF) / 255.0,
+            ((c >> 24) & 0xFF) / 255.0,
         };
+        return float4(color.xyz, in.alpha);
     }
     else if (data.type == PaintTypeGradient) {
         GradientData gData = data.g;
@@ -66,29 +77,19 @@ fragmentShader(RasterizerData in [[stage_in]],
                 break;
         }
         float l = fmod(k, 1.0);
-        switch (gData.method) {
-            case SpreadMethodRepeat:
-                k = l < 0 ? l + 1.0 : l;
-                break;
-            case SpreadMethodReflect:
-                k = fabs( l );
-                break;
-            case SpreadMethodPad:
-            default:
-                k = clamp(k, 0.0, 1.0);
-                break;
-        }
         constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
-        half4 color = texture.sample(textureSampler, {k, 0});
-        return float4(color);
+        float4 color = texture.sample(textureSampler, {k, static_cast<float>(gData.colorLuTIdx)});
+//        return color;
+        return float4(color.xyz, color.w * in.alpha);
     }
     else if (data.type == PaintTypeTexture) {
         TextureData tData = data.t;
         float2 pt = tData.mat * in.position.xy + tData.tranlate;
         float2 uv = pt / float2( tData.size );
         constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
-        half4 colorSample = texture.sample(textureSampler, uv);
-        return float4(colorSample);
+        float4 color = texture.sample(textureSampler, uv);
+//        return color;
+        return float4(color.xyz, in.alpha);
     }
     else {
         return { 0, 0, 0, 0 };

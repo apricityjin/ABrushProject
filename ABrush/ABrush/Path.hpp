@@ -26,7 +26,7 @@ struct Flatten
     std::vector<APoint> points;
     bool               isClosed;
     size_t size; // 这个参数指的是Path内部的线条数，放在这里方便就这样写了，后续需要改
-    float *store() const;
+    void *store() const;
     
 };
 
@@ -44,7 +44,6 @@ struct Path
     
     APoint start = {0, 0};
     
-    APoint getCurrentPoint();
     Path &moveTo(APoint &p);
     Path &lineTo(APoint &p);
     Path &quadTo(APoint &p1, APoint &endPoint);

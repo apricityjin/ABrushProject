@@ -20,4 +20,6 @@
 #include "RenderData.hpp"
 #include "Path.hpp"
 
+#include "MetalRender.hh"
+
 #endif

@@ -17,20 +17,20 @@ namespace ABrush
 {
     struct Builder // ctx
     {
-        struct GradientData
-        {
-            int spread;
-            int type;
-            Affine a;
-            uint32_t colorLuT[256];
-        };
-        
-        struct TextureData
-        {
-            int width;
-            int height;
-            Affine a;
-        };
+//        struct GradientData
+//        {
+//            int spread;
+//            int type;
+//            Affine a;
+//            uint32_t colorLuT[256];
+//        };
+//        
+//        struct TextureData
+//        {
+//            int width;
+//            int height;
+//            Affine a;
+//        };
         
         enum class TessellatorStyle : uint8_t {
             strokeStyle,
@@ -61,6 +61,7 @@ namespace ABrush
         std::vector<Path> paths;
         Affine affine;
         RenderData data;
+        RenderDataItem curItem;
     };
 }
 

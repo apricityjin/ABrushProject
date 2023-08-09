@@ -5,350 +5,549 @@
 //  Created by Apricity on 2023/7/10.
 //
 
+#include <simd/simd.h>
+
 #include "StrokeTessellator.hpp"
 
 namespace ABrush
 {
-void StrokeTessellator::stroke(Flatten *flattens, RenderData &data)
+
+simd_float2x2 getMatPerAngle(float segment, float angle) {
+    float a = angle / segment;
+    simd_float2x2 mat = {
+        simd_make_float2(cos(a), sin(a)),
+        simd_make_float2(-sin(a), cos(a))
+    };
+    return mat;
+}
+
+int getSegment(float radius, float angle) {
+    return getSegment(radius, angle, 0.1);
+}
+
+int getSegment(float radius, float angle, float tolerance) {
+    tolerance = std::min(tolerance, radius);
+    float step = std::sqrt(2.0 * tolerance * radius - tolerance * tolerance) * 2.0;
+    float arcLength = angle * radius;
+    int segment = std::ceil(arcLength / step);
+    if (segment < 2) { segment = 2; }
+    return segment;
+}
+
+void StrokeTessellator::stroke(Flatten *flattens, RenderDataItem &item)
 {
     using namespace std;
     size_t size = flattens[0].size;
-    uint32_t index_offset = 0; // 为了只用传递一次 verdices，这里在绘制多个线段的时候需要添加上offset
+    int index_offset = 0; // 为了只用传递一次 vertices，这里在绘制多个线段的时候需要添加上offset
+    std::vector<Vertex> vertices;
+    std::vector<uint16_t> indices;
     for (size_t pathIdx = 0; pathIdx < size; ++pathIdx) {
         Flatten &f = flattens[pathIdx];
-        vector<APoint> &points = f.points;
-        auto ptCount = f.points.size();
-        if (ptCount <= 1) { continue; } // 只有一个点无法绘画，这里直接进行跳过处理
-        vector<APoint> vertices;
-        int vertex_count = 0;
-        vector<uint16_t> elements;
-        int element_count = 0;
+        size_t num_pts = f.points.size();
         
-        if (line_cap_style == LineCap::Round && !f.isClosed) {
-            APoint &start = points[0],
-            &end = points[1];
-            vertices.push_back(start);
-            vertex_count += 1;
-            APoint tangent = (end - start).normalized();
-            APoint n_left = APoint(-tangent.y, tangent.x) * line_width;
-            APoint left = start + n_left;
-            vertices.push_back(left);
-            vertex_count += 1;
-            float angle = M_PI;
-            float tolerance = 0.1;
-            float &radius = line_width;
-            tolerance = std::min(tolerance, radius);
-            float step = std::sqrt(2.0 * tolerance * radius - tolerance * tolerance) * 2.0;
-            float arcLength = angle * radius;
-            int segment = std::ceil(arcLength / step);
-            if (segment < 2) { segment = 2; }
-            Affine a = Affine().rotate(angle / segment);
-            for (int i = 0; i < segment; ++i) {
-                n_left *= a;
-                left = start + n_left;
-                vertices.push_back(left);
-                vertex_count += 1;
+//        for (int j = 0; j < f.points.size(); ++j) {
+//            printf("(%f, %f) ", f.points[j].x, f.points[j].y);
+//        }
+//        printf("\n");
+        
+        float config_w = 1, config_lw = line_width; // lw 线宽的一半
+        float w = config_w / 2, l = config_lw / 2, lw = l - w; // lw : internal / l : external
+
+        bool isClosed = f.isClosed;
+        vector_float2 * pts = static_cast<vector_float2 *>(f.store());
+        
+        int j = 0;
+        vector_float2 st = pts[num_pts - 1];
+        vector_float2 ct = pts[j];
+        vector_float2 ed = pts[j + 1];
+        vector_float2 SC = simd_normalize(ct - st);
+        vector_float2 CE = simd_normalize(ed - ct);
+        vector_float2 SC_left  = simd_make_float2( SC.y, -SC.x);
+        vector_float2 CE_left  = simd_make_float2( CE.y, -CE.x);
+        vector_float2 SC_right = simd_make_float2(-SC.y,  SC.x);
+        vector_float2 CE_right = simd_make_float2(-CE.y,  CE.x);
+        vector_float2 cur_l_l;
+        vector_float2 cur_r_l;
+        vector_float2 cur_l_lw;
+        vector_float2 cur_r_lw;
+        
+        int segment = 1;
+//        int idx_pre = 0;
+        int idx_pre = index_offset;
+        int idx_st_l_l = idx_pre+3, idx_st_r_l = idx_pre+1, idx_st_l_lw = idx_pre+2, idx_st_r_lw = idx_pre;
+        int idx_r_lw = 0, idx_r_l = 0, idx_l_lw = 0, idx_l_l = 0;
+        
+        if (!isClosed) {
+            if (line_cap_style == LineCap::Round) {
+                segment = getSegment(l, M_PI);
+                simd_float2x2 mat = getMatPerAngle(segment, M_PI);
+                idx_r_lw = idx_pre; idx_r_l = idx_pre+1; idx_l_lw = idx_pre + segment * 2; idx_l_l = idx_l_lw + 1;
+                for (int idx = idx_pre; idx < idx_l_lw; idx += 2) {
+                    indices.push_back(idx_r_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                    indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                    indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                    cur_r_l  = l  * CE_right + ct; cur_r_lw = lw * CE_right + ct;
+                    vertices.push_back({ cur_r_lw, 1});
+                    vertices.push_back({ cur_r_l,  0 });
+                    CE_right = simd_mul(mat, CE_right);
+                }
+                cur_l_l  = l  * CE_left  + ct;
+                cur_l_lw = lw * CE_left  + ct;
+                vertices.push_back({ cur_l_lw, 1 });
+                vertices.push_back({ cur_l_l,  0 });
+                idx_pre = idx_l_lw + 2;
             }
-            element_count = vertex_count - 2;
-            for (uint16_t j = 0; j < element_count; ++j) {
-                elements.push_back(0 + index_offset);
-                elements.push_back(j + 1 + index_offset);
-                elements.push_back(j + 2 + index_offset);
+            else if (line_cap_style == LineCap::Butt) {
+                cur_l_l  = l  * CE_left  - w * CE + ct; cur_l_lw = lw * CE_left  + ct;
+                cur_r_l  = l  * CE_right - w * CE + ct; cur_r_lw = lw * CE_right + ct;
+                vertices.push_back({ cur_r_lw, 1 });
+                vertices.push_back({ cur_r_l,  0 });
+                vertices.push_back({ cur_l_lw, 1 });
+                vertices.push_back({ cur_l_l,  0 });
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);   indices.push_back(idx_l_lw);
+                indices.push_back(idx_r_l);  indices.push_back(idx_l_lw);  indices.push_back(idx_l_l);
+            }
+            else if (line_cap_style == LineCap::Square) {
+                cur_r_l  = l  * (CE_right - CE) + ct; cur_l_l  = l  * (CE_left  - CE) + ct;
+                cur_r_lw = lw * (CE_right - CE) + ct; cur_l_lw = lw * (CE_left  - CE) + ct;
+                vertices.push_back({ cur_r_lw, 1 });
+                vertices.push_back({ cur_r_l,  0 });
+                vertices.push_back({ cur_l_lw, 1 });
+                vertices.push_back({ cur_l_l,  0 });
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);   indices.push_back(idx_l_lw);
+                indices.push_back(idx_r_l);  indices.push_back(idx_l_lw);  indices.push_back(idx_l_l);
             }
         }
-        
-        // LineJoinBevel
-        if (line_join_style == LineJoin::Bevel) {
-            // 第一个点
-            int vertexIdx = 0;
-            APoint &start = points.at(vertexIdx),
-            &end = points.at(vertexIdx + 1);
-            APoint tangent = (end - start).normalized();
-            APoint n_left = APoint(-tangent.y, tangent.x) * line_width;
-            APoint n_right = APoint(tangent.y, -tangent.x) * line_width;
-            APoint left = start + n_left;
-            APoint right = start + n_right;
-            vertices.push_back(left);
-            vertices.push_back(right);
-            vertex_count += 2;
-            // 中间的点
-            for (vertexIdx = 1; vertexIdx < ptCount - 1; ++vertexIdx) {
-                // 作为终点
-                left = end + n_left;
-                right = end + n_right;
-                vertices.push_back(left);
-                vertices.push_back(right);
-                vertex_count += 2;
-                // 作为起点
-                start = points.at(vertexIdx);
-                end = points.at(vertexIdx + 1);
-                tangent = (end - start).normalized();
-                n_left = APoint(-tangent.y, tangent.x) * line_width;
-                n_right = APoint(tangent.y, -tangent.x) * line_width;
-                left = start + n_left;
-                right = start + n_right;
-                vertices.push_back(left);
-                vertices.push_back(right);
-                vertex_count += 2;
-            }
-            // 最后一个点，如果是闭合线段，需要特殊处理
-            left = end + n_left;
-            right = end + n_right;
-            vertices.push_back(left);
-            vertices.push_back(right);
-            vertex_count += 2;
-            //闭合曲线的处理
-            if (f.isClosed) {
-                vertices.push_back(vertices[0]);
-                vertices.push_back(vertices[1]);
-                vertex_count += 2;
-            }
-            uint16_t j = element_count;
-            element_count = vertex_count - 2;
-            for (; j < element_count; ++j) {
-                elements.push_back(j + index_offset);
-                elements.push_back(j + 1 + index_offset);
-                elements.push_back(j + 2 + index_offset);
-            }
-        }
-        // LineJoinMiter
-        else if (line_join_style == LineJoin::Miter) {
-            
-            // 第一个点
-            int vertexIdx = 0;
-            APoint start = points.at(vertexIdx),
-            end = points.at(vertexIdx + 1);
-            APoint tangent = (end - start).normalized();
-            APoint n_left = APoint(-tangent.y, tangent.x) * line_width;
-            APoint n_right = APoint(tangent.y, -tangent.x) * line_width;
-            APoint n_left_start = n_left;
-            APoint n_right_start = n_right;
-            APoint left = start + n_left;
-            APoint right = start + n_right;
-            vertices.push_back(left);
-            vertices.push_back(right);
-            vertex_count += 2;
-            // 中间的点
-            for (vertexIdx = 1; vertexIdx < ptCount - 1; ++vertexIdx) {
-                APoint p0 = n_left;
-                APoint p1 = n_right;
-                start = points.at(vertexIdx);
-                end = points.at(vertexIdx + 1);
-                tangent = (end - start).normalized();
-                APoint &p2 = n_left = APoint(-tangent.y, tangent.x) * line_width;
-                APoint &p3 = n_right = APoint(tangent.y, -tangent.x) * line_width;
-                float H = sqrt((p1.x - p3.x) * (p1.x - p3.x) + (p1.y - p3.y) * (p1.y - p3.y));
-                float cos_angle = (line_width * line_width * 2 - H * H) / (2 * line_width * line_width);
-                if (almost_equal(cos_angle, static_cast<float>(-1))) {
-                    vertices.push_back(start + n_left);
-                    vertices.push_back(start + n_right);
-                    vertex_count += 2;
-                } else {
-                    float cos_angle_2 = sqrt((1 + cos_angle) / 2);
-                    float L = line_width / cos_angle_2;
-                    APoint l = (p0 + p2).normalized() * L + start;
-                    APoint r = (p1 + p3).normalized() * L + start;
-                    vertices.push_back(l);
-                    vertices.push_back(r);
-                    vertex_count += 2;
+        else {
+            float a = acos(simd_dot(SC_left, CE_left)), cos_a_2 = cos(a / 2);; // simd_length(SC_left) * simd_length(CE_left) -> 1
+            vector_float2 n_r = simd_normalize(SC_right + CE_right) / cos_a_2;
+            vector_float2 n_l = simd_normalize(SC_left + CE_left) / cos_a_2;
+            float rotate = simd_cross(SC, CE).z; // rotate > 0 -> right | rotate < 0 -> left
+            if (line_join_style == LineJoin::Round) {
+                if (rotate > 0) {
+                    cur_r_l  = l  * n_r + ct; cur_l_l  = l  * SC_left + ct;
+                    cur_r_lw = lw * n_r + ct; cur_l_lw = lw * SC_left + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    idx_r_lw = idx_pre; idx_r_l = idx_pre + 1; idx_l_lw = idx_pre + 2; idx_l_l = idx_pre + 3;
+                    segment = getSegment(l, a);
+                    simd_float2x2 mat = getMatPerAngle(segment, a);
+                    idx_l_lw += segment * 2;
+                    idx_l_l = idx_l_lw + 1;
+                    for (int idx = idx_pre + 2; idx < idx_l_lw; idx += 2) {
+                        indices.push_back(idx_r_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                        indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                        indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                        SC_left = simd_mul(mat, SC_left);
+                        cur_l_lw = lw * SC_left + ct;
+                        cur_l_l  = l  * SC_left + ct;
+                        vertices.push_back({ cur_l_lw, 1 });
+                        vertices.push_back({ cur_l_l,  0 });
+                    }
+                    idx_pre = idx_l_l + 1;
+                }
+                else if (rotate < 0) {
+                    idx_st_r_lw = idx_pre+2; idx_st_r_l = idx_pre+3;
+                    idx_st_l_lw = idx_pre;   idx_st_l_l = idx_pre+1;
+                    cur_l_l  = l  * n_l + ct; cur_r_l  = l  * SC_right + ct;
+                    cur_l_lw = lw * n_l + ct; cur_r_lw = lw * SC_right + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    idx_l_lw = idx_pre; idx_l_l = idx_pre+1; idx_r_lw = idx_pre+2; idx_r_l = idx_pre+3;
+                    segment = getSegment(l, a);
+                    simd_float2x2 mat = getMatPerAngle(segment, -a);
+                    idx_r_lw += segment * 2;
+                    idx_r_l = idx_r_lw + 1;
+                    for (int idx = idx_pre + 2; idx < idx_r_lw; idx+=2) {
+                        indices.push_back(idx_l_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                        indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                        indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                        SC_right = simd_mul(mat, SC_right);
+                        cur_r_lw = lw * SC_right + ct;
+                        cur_r_l  = l  * SC_right + ct;
+                        vertices.push_back({ cur_r_lw, 1 });
+                        vertices.push_back({ cur_r_l,  0 });
+                    }
+                    idx_pre = idx_r_l + 1;
                 }
             }
-            
-            // 最后一个点
-            left = end + n_left;
-            right = end + n_right;
-            vertices.push_back(left);
-            vertices.push_back(right);
-            vertex_count += 2;
-            
-            // 闭合曲线的处理
-            if (f.isClosed) {
-                float H = sqrt((n_left.x - n_left_start.x) * (n_left.x - n_left_start.x) +
-                               (n_left.y - n_left_start.y) * (n_left.y - n_left_start.y));
-                float cos_angle = (line_width * line_width * 2 - H * H) / (2 * line_width * line_width);
-                if (almost_equal(cos_angle, static_cast<float>(-1))) {
-                    vertices.push_back(start + n_left);
-                    vertices.push_back(start + n_right);
-                    vertex_count += 2;
-                } else {
-                    float cos_angle_2 = sqrt((1 + cos_angle) / 2);
-                    float L = line_width / cos_angle_2;
-                    APoint l = (n_left + n_left_start).normalized() * L + end;
-                    APoint r = (n_right + n_right_start).normalized() * L + end;
-                    vertices.push_back(l);
-                    vertices.push_back(r);
-                    vertex_count += 2;
+            else if (line_join_style == LineJoin::Miter) {
+                cur_r_l  = l  * n_r + ct; cur_l_l  = l  * n_l + ct;
+                cur_r_lw = lw * n_r + ct; cur_l_lw = lw * n_l + ct;
+                vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+            }
+            else if (line_join_style == LineJoin::Bevel) {
+                if (rotate > 0) {
+                    cur_r_l  = l  * n_r + ct; cur_l_l  = l  * SC_left + ct;
+                    cur_r_lw = lw * n_r + ct; cur_l_lw = lw * SC_left + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    cur_l_l  = l  * CE_left + ct;
+                    cur_l_lw = lw * CE_left + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw); indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);  indices.push_back(idx_pre);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre);  indices.push_back(idx_pre+1);
+                    idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
                 }
-                vertices.push_back(vertices[0]);
-                vertices.push_back(vertices[1]);
-                vertex_count += 2;
-            }
-            uint16_t j = element_count;
-            element_count = vertex_count - 2;
-            for (; j < element_count; ++j) {
-                elements.push_back(j  + index_offset);
-                elements.push_back(j + 1 + index_offset);
-                elements.push_back(j + 2 + index_offset);
-            }
-        }
-        // LineJoinRound
-        else if (line_join_style == LineJoin::Round) {
-            // 处理起点
-            int vertexIdx = 0;
-            APoint start = points.at(vertexIdx),
-            end = points.at(vertexIdx + 1);
-            APoint tangent = (end - start).normalized();
-            APoint n_left = APoint(-tangent.y, tangent.x) * line_width;
-            APoint n_right = APoint(tangent.y, -tangent.x) * line_width;
-            APoint n_left_start = n_left;
-            APoint n_right_start = n_right;
-            APoint left = start + n_left;
-            APoint right = start + n_right;
-            vertices.push_back(left);
-            vertices.push_back(right);
-            vertex_count += 2;
-            for (vertexIdx = 1; vertexIdx < ptCount - 1; ++vertexIdx) {
-                APoint p0 = n_left;
-                APoint p1 = n_right;
-                left = end + n_left;
-                right = end + n_right;
-                vertices.push_back(left);
-                vertices.push_back(right);
-                vertex_count += 2;
-                // 计算圆弧
-                /*
-                 auto circleFlatteningStep = [](float radius, float tolerance) {
-                 tolerance = std::min(tolerance, radius);
-                 return 2.0 * std::sqrt(2.0 * tolerance * radius - tolerance * tolerance);
-                 };
-                 float arcLength = M_PI * radius * 2.0;
-                 float step = circleFlatteningStep(radius, 0.1);
-                 int segment = std::ceil(arcLength / step);
-                 */
-                start = points.at(vertexIdx);
-                end = points.at(vertexIdx + 1);
-                tangent = (end - start).normalized();
-                APoint &p2 = n_left = APoint(-tangent.y, tangent.x) * line_width; // 这句代码虽然没使用但是注释之后就报错
-                APoint &p3 = n_right = APoint(tangent.y, -tangent.x) * line_width;
-                float H = sqrt((p1.x - p3.x) * (p1.x - p3.x) + (p1.y - p3.y) * (p1.y - p3.y));
-                float cos_angle = (line_width * line_width * 2 - H * H) / (2 * line_width * line_width);
-                float angle = acos(cos_angle);
-                
-                float tolerance = 0.1;
-                float &radius = line_width;
-                tolerance = std::min(tolerance, radius);
-                float step = std::sqrt(2.0 * tolerance * radius - tolerance * tolerance) * 2.0;
-                float arcLength = angle * radius;
-                int segment = std::ceil(arcLength / step);
-                if (segment < 2) { segment = 2; }
-                
-                Affine a = Affine().rotate(angle / segment);
-                for (int i = 0; i < segment + 1; ++i) {
-                    p0 *= a;
-                    p1 *= a;
-                    left = start + p0;
-                    right = start + p1;
-                    vertices.push_back(left);
-                    vertices.push_back(right);
-                    vertex_count += 2;
-                }
-                left = start + n_left;
-                right = start + n_right;
-                vertices.push_back(left);
-                vertices.push_back(right);
-                vertex_count += 2;
-            }
-            // 处理终点
-            left = end + n_left;
-            right = end + n_right;
-            vertices.push_back(left);
-            vertices.push_back(right);
-            vertex_count += 2;
-            if (f.isClosed) {
-                // 闭合处理
-                float H = sqrt((n_left.x - n_left_start.x) * (n_left.x - n_left_start.x) +
-                               (n_left.y - n_left_start.y) * (n_left.y - n_left_start.y));
-                float cos_angle = (line_width * line_width * 2 - H * H) / (2 * line_width * line_width);
-                float angle = acos(cos_angle);
-                float tolerance = 0.1;
-                float &radius = line_width;
-                tolerance = std::min(tolerance, radius);
-                float step = std::sqrt(2.0 * tolerance * radius - tolerance * tolerance) * 2.0;
-                float arcLength = angle * radius;
-                int segment = std::ceil(arcLength / step);
-                if (segment < 2) { segment = 2; }
-                Affine a = Affine().rotate(angle / segment);
-                for (int i = 0; i < segment; ++i) {
-                    n_left *= a;
-                    n_right *= a;
-                    left = end + n_left;
-                    right = end + n_right;
-                    vertices.push_back(left);
-                    vertices.push_back(right);
-                    vertex_count += 2;
+                else if (rotate < 0) {
+                    idx_st_r_lw = idx_pre+2; idx_st_r_l = idx_pre+3;
+                    idx_st_l_lw = idx_pre;   idx_st_l_l = idx_pre+1;
+                    cur_l_l  = l  * n_l + ct; cur_r_l  = l  * SC_right + ct;
+                    cur_l_lw = lw * n_l + ct; cur_r_lw = lw * SC_right + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    cur_r_l  = l  * CE_right + ct;
+                    cur_r_lw = lw * CE_right + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    idx_l_lw = idx_pre++; idx_l_l = idx_pre++; idx_r_lw = idx_pre++; idx_r_l = idx_pre++;
+                    indices.push_back(idx_l_lw); indices.push_back(idx_r_lw); indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);  indices.push_back(idx_pre);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre);  indices.push_back(idx_pre+1);
+                    idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
                 }
             }
-            uint16_t j = element_count;
-            element_count = vertex_count - 2;
-            for (; j < element_count; ++j) {
-                elements.push_back(j + index_offset);
-                elements.push_back(j + 1 + index_offset);
-                elements.push_back(j + 2 + index_offset);
-            }
-        }
-        // 结束点的处理
-        if (line_cap_style == LineCap::Round && !f.isClosed) {
-            APoint &start = points[ptCount - 2],
-            &end = points[ptCount - 1];
-            uint32_t end_idx = vertex_count;
-            vertices.push_back(end);
-            vertex_count += 1;
-            APoint tangent = (end - start).normalized();
-            APoint n_right = APoint(tangent.y, -tangent.x) * line_width;
-            APoint right = end + n_right;
-            vertices.push_back(right);
-            vertex_count += 1;
-            float angle = M_PI;
-            float tolerance = 0.1;
-            float &radius = line_width;
-            tolerance = std::min(tolerance, radius);
-            float step = std::sqrt(2.0 * tolerance * radius - tolerance * tolerance) * 2.0;
-            float arcLength = angle * radius;
-            int segment = std::ceil(arcLength / step);
-            if (segment < 2) { segment = 2; }
-            Affine a = Affine().rotate(angle / segment);
-            for (int i = 0; i < segment; ++i) {
-                n_right *= a;
-                right = end + n_right;
-                vertices.push_back(right);
-                vertex_count += 1;
-            }
-            element_count = vertex_count - 2;
-            uint16_t j = end_idx;
-            for (; j < element_count; ++j) {
-                elements.push_back(end_idx + index_offset);
-                elements.push_back(j + 1 + index_offset);
-                elements.push_back(j + 2 + index_offset);
-            }
-            
-            element_count -= 2;
         }
         
-        for (int j = 0; j < vertex_count; ++j) {
-            data.vertices.push_back({vertices[j].x, vertices[j].y});
+        for (j = 1; j < num_pts - 1; ++j) {
+            st = pts[j - 1];
+            ct = pts[j];
+            ed = pts[j + 1];
+            SC = simd_normalize(ct - st);
+            CE = simd_normalize(ed - ct);
+            SC_left  = simd_make_float2( SC.y, -SC.x);
+            CE_left  = simd_make_float2( CE.y, -CE.x);
+            SC_right = simd_make_float2(-SC.y,  SC.x);
+            CE_right = simd_make_float2(-CE.y,  CE.x);
+            float a = acos(simd_dot(SC_left, CE_left)), cos_a_2 = cos(a / 2);; // simd_length(SC_left) * simd_length(CE_left) -> 1
+            vector_float2 n_r = simd_normalize(SC_right + CE_right) / cos_a_2;
+            vector_float2 n_l = simd_normalize(SC_left + CE_left) / cos_a_2;
+            float rotate = simd_cross(SC, CE).z; // rotate > 0 -> right | rotate < 0 -> left
+            if (line_join_style == LineJoin::Round) {
+                if (rotate > 0) {
+                    cur_r_l  = l  * n_r + ct; cur_l_l  = l  * SC_left + ct;
+                    cur_r_lw = lw * n_r + ct; cur_l_lw = lw * SC_left + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre+1);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre+2);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre+2); indices.push_back(idx_pre+3);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre+2);
+                    idx_r_lw = idx_pre; idx_r_l = idx_pre + 1; idx_l_lw = idx_pre + 2; idx_l_l = idx_pre + 3;
+                    segment = getSegment(l, a);
+                    simd_float2x2 mat = getMatPerAngle(segment, a);
+                    idx_l_lw += segment * 2;
+                    idx_l_l = idx_l_lw + 1;
+                    for (int idx = idx_pre + 2; idx < idx_l_lw; idx += 2) {
+                        indices.push_back(idx_r_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                        indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                        indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                        SC_left = simd_mul(mat, SC_left);
+                        cur_l_lw = lw * SC_left + ct;
+                        cur_l_l  = l  * SC_left + ct;
+                        vertices.push_back({ cur_l_lw, 1 });
+                        vertices.push_back({ cur_l_l,  0 });
+                    }
+                    idx_pre = idx_l_l + 1;
+                }
+                else if (rotate < 0) {
+                    cur_l_l  = l  * n_l + ct; cur_r_l  = l  * SC_right + ct;
+                    cur_l_lw = lw * n_l + ct; cur_r_lw = lw * SC_right + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre+2);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre+2);   indices.push_back(idx_pre+3);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre+1);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre+2);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre+2);   indices.push_back(idx_pre);
+                    idx_l_lw = idx_pre; idx_l_l = idx_pre+1; idx_r_lw = idx_pre+2; idx_r_l = idx_pre+3;
+                    segment = getSegment(l, a);
+                    simd_float2x2 mat = getMatPerAngle(segment, -a);
+                    idx_r_lw += segment * 2;
+                    idx_r_l = idx_r_lw + 1;
+                    for (int idx = idx_pre + 2; idx < idx_r_lw; idx+=2) {
+                        indices.push_back(idx_l_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                        indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                        indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                        SC_right = simd_mul(mat, SC_right);
+                        cur_r_lw = lw * SC_right + ct;
+                        cur_r_l  = l  * SC_right + ct;
+                        vertices.push_back({ cur_r_lw, 1 });
+                        vertices.push_back({ cur_r_l,  0 });
+                    }
+                    idx_pre = idx_r_l + 1;
+                }
+            }
+            else if (line_join_style == LineJoin::Miter) {
+                cur_r_l  = l  * n_r + ct; cur_l_l  = l  * n_l + ct;
+                cur_r_lw = lw * n_r + ct; cur_l_lw = lw * n_l + ct;
+                vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre + 1);
+                indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre + 2);
+                indices.push_back(idx_l_l);  indices.push_back(idx_pre + 2); indices.push_back(idx_pre + 3);
+                indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre + 2);
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+            }
+            else if (line_join_style == LineJoin::Bevel) {
+                if (rotate > 0) {
+                    cur_r_l  = l  * n_r + ct; cur_l_l  = l  * SC_left + ct;
+                    cur_r_lw = lw * n_r + ct; cur_l_lw = lw * SC_left + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre + 1);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre + 2);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre + 2); indices.push_back(idx_pre + 3);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre + 2);
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                    cur_l_lw = lw * CE_left + ct;
+                    cur_l_l  = l  * CE_left + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_l_l+1);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_l_l+1);   indices.push_back(idx_l_l+2);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_l_lw+2);
+                    idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                }
+                else if (rotate < 0) {
+                    cur_r_l  = l  * SC_right + ct; cur_l_l  = l  * n_l + ct;
+                    cur_r_lw = lw * SC_right + ct; cur_l_lw = lw * n_l + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre + 1);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre + 2);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre + 2); indices.push_back(idx_pre + 3);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre + 2);
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                    cur_r_lw = lw * CE_right + ct;
+                    cur_r_l  = l  * CE_right + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_l_l+1);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_l_l+1);   indices.push_back(idx_l_l+2);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_l_lw+2);
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++;
+                }
+            }
         }
         
-        for (int k = 0; k < element_count; ++k) {
-            data.indices.push_back(elements[k * 3]);
-            data.indices.push_back(elements[k * 3 + 1]);
-            data.indices.push_back(elements[k * 3 + 2]);
+        st = pts[j - 1];
+        ct = pts[j];
+        ed = pts[0];
+        SC = simd_normalize(ct - st);
+        CE = simd_normalize(ed - ct);
+        SC_left  = simd_make_float2( SC.y, -SC.x);
+        SC_right = simd_make_float2(-SC.y,  SC.x);
+        CE_left  = simd_make_float2( CE.y, -CE.x);
+        CE_right = simd_make_float2(-CE.y,  CE.x);
+        if (!isClosed) {
+            if (line_cap_style == LineCap::Round) {
+                cur_l_lw = lw * SC_left  + ct;
+                cur_l_l  = l  * SC_left  + ct;
+                vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                indices.push_back(idx_l_lw); indices.push_back(idx_l_l);  indices.push_back(idx_pre);
+                indices.push_back(idx_l_l);  indices.push_back(idx_pre);  indices.push_back(idx_pre+1);
+                indices.push_back(idx_l_lw); indices.push_back(idx_r_lw); indices.push_back(idx_pre);
+                idx_l_lw = idx_pre; idx_l_l = idx_pre+1;
+                segment = getSegment(l, M_PI);
+                simd_float2x2 mat = getMatPerAngle(segment, M_PI);
+                idx_pre += segment * 2;
+                indices.push_back(idx_r_lw); indices.push_back(idx_l_lw); indices.push_back(idx_pre);
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);  indices.push_back(idx_pre);
+                indices.push_back(idx_r_l);  indices.push_back(idx_pre);  indices.push_back(idx_pre+1);
+                idx_r_lw = idx_pre; idx_r_l = idx_r_lw + 1;
+                for (int idx = idx_l_lw; idx < idx_r_lw; idx+=2) {
+                    indices.push_back(idx_r_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                    indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                    indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                    SC_left = simd_mul(mat, SC_left);
+                    cur_l_lw = lw * SC_left + ct;
+                    cur_l_l  = l  * SC_left + ct;
+                    vertices.push_back({ cur_l_lw, 1 });
+                    vertices.push_back({ cur_l_l,  0 });
+                }
+                idx_pre = idx_r_l + 1;
+            }
+            else if (line_cap_style == LineCap::Butt) {
+                cur_l_lw = lw * SC_left  + ct;
+                cur_r_lw = lw * SC_right + ct;
+                cur_l_l  = l  * SC_left  + w * SC + ct;
+                cur_r_l  = l  * SC_right + w * SC + ct;
+                vertices.push_back({ cur_r_lw, 1 });
+                vertices.push_back({ cur_r_l,  0 });
+                vertices.push_back({ cur_l_lw, 1 });
+                vertices.push_back({ cur_l_l,  0 });
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);   indices.push_back(idx_pre);
+                indices.push_back(idx_r_l);  indices.push_back(idx_pre);   indices.push_back(idx_pre+1);
+                indices.push_back(idx_l_lw); indices.push_back(idx_l_l);   indices.push_back(idx_pre+2);
+                indices.push_back(idx_l_l);  indices.push_back(idx_pre+2); indices.push_back(idx_pre+3);
+                indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);  indices.push_back(idx_pre);
+                indices.push_back(idx_l_lw); indices.push_back(idx_pre);   indices.push_back(idx_pre+2);
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                indices.push_back(idx_r_lw);  indices.push_back(idx_l_lw);  indices.push_back(idx_r_l);
+                indices.push_back(idx_l_lw);  indices.push_back(idx_r_l);   indices.push_back(idx_l_l);
+            }
+            else if (line_cap_style == LineCap::Square) {
+                cur_l_lw = lw * (SC_left  + SC) + ct;
+                cur_r_lw = lw * (SC_right + SC) + ct;
+                cur_l_l  = l  * (SC_left  + SC) + ct;
+                cur_r_l  = l  * (SC_right + SC) + ct;
+                vertices.push_back({ cur_r_lw, 1 });
+                vertices.push_back({ cur_r_l,  0 });
+                vertices.push_back({ cur_l_lw, 1 });
+                vertices.push_back({ cur_l_l,  0 });
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);   indices.push_back(idx_pre);
+                indices.push_back(idx_r_l);  indices.push_back(idx_pre);   indices.push_back(idx_pre+1);
+                indices.push_back(idx_l_lw); indices.push_back(idx_l_l);   indices.push_back(idx_pre+2);
+                indices.push_back(idx_l_l);  indices.push_back(idx_pre+2); indices.push_back(idx_pre+3);
+                indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);  indices.push_back(idx_pre);
+                indices.push_back(idx_l_lw); indices.push_back(idx_pre);   indices.push_back(idx_pre+2);
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                indices.push_back(idx_r_lw);  indices.push_back(idx_l_lw);  indices.push_back(idx_r_l);
+                indices.push_back(idx_l_lw);  indices.push_back(idx_r_l);   indices.push_back(idx_l_l);
+            }
         }
-        index_offset += vertex_count;
-        /* 2D position
-         * struct Vertex {
-         *     vector_float2 position;
-         * } // 只消耗 2 * 4 个字节就可以储存一个2D position
-         */
+        else {
+            float a = acos(simd_dot(SC_left, CE_left)), cos_a_2 = cos(a / 2);; // simd_length(SC_left) * simd_length(CE_left) -> 1
+            vector_float2 n_r = simd_normalize(SC_right + CE_right) / cos_a_2;
+            vector_float2 n_l = simd_normalize(SC_left + CE_left) / cos_a_2;
+            float rotate = simd_cross(SC, CE).z; // rotate > 0 -> right | rotate < 0 -> left
+            if (line_join_style == LineJoin::Round) {
+                if (rotate > 0) {
+                    cur_r_l  = l  * n_r + ct; cur_l_l  = l  * SC_left + ct;
+                    cur_r_lw = lw * n_r + ct; cur_l_lw = lw * SC_left + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre+1);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre+2);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre+2); indices.push_back(idx_pre+3);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre+2);
+                    idx_r_lw = idx_pre; idx_r_l = idx_pre + 1; idx_l_lw = idx_pre + 2; idx_l_l = idx_pre + 3;
+                    segment = getSegment(l, a);
+                    simd_float2x2 mat = getMatPerAngle(segment, a);
+                    idx_l_lw += segment * 2;
+                    idx_l_l = idx_l_lw + 1;
+                    for (int idx = idx_pre + 2; idx < idx_l_lw; idx += 2) {
+                        indices.push_back(idx_r_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                        indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                        indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                        SC_left = simd_mul(mat, SC_left);
+                        cur_l_lw = lw * SC_left + ct;
+                        cur_l_l  = l  * SC_left + ct;
+                        vertices.push_back({ cur_l_lw, 1 });
+                        vertices.push_back({ cur_l_l,  0 });
+                    }
+                    idx_pre = idx_l_l + 1;
+                }
+                else if (rotate < 0) {
+                    cur_l_l  = l  * n_l + ct; cur_r_l  = l  * SC_right + ct;
+                    cur_l_lw = lw * n_l + ct; cur_r_lw = lw * SC_right + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre+2);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre+2);   indices.push_back(idx_pre+3);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre+1);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre+2);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre+2);   indices.push_back(idx_pre);
+                    idx_l_lw = idx_pre; idx_l_l = idx_pre+1; idx_r_lw = idx_pre+2; idx_r_l = idx_pre+3;
+                    segment = getSegment(l, a);
+                    simd_float2x2 mat = getMatPerAngle(segment, -a);
+                    idx_r_lw += segment * 2;
+                    idx_r_l = idx_r_lw + 1;
+                    for (int idx = idx_pre + 2; idx < idx_r_lw; idx+=2) {
+                        indices.push_back(idx_l_lw); indices.push_back(idx);   indices.push_back(idx+2);
+                        indices.push_back(idx);      indices.push_back(idx+1); indices.push_back(idx+2);
+                        indices.push_back(idx+1);    indices.push_back(idx+2); indices.push_back(idx+3);
+                        SC_right = simd_mul(mat, SC_right);
+                        cur_r_lw = lw * SC_right + ct;
+                        cur_r_l  = l  * SC_right + ct;
+                        vertices.push_back({ cur_r_lw, 1 });
+                        vertices.push_back({ cur_r_l,  0 });
+                    }
+                    idx_pre = idx_r_l + 1;
+                }
+            }
+            else if (line_join_style == LineJoin::Miter) {
+                cur_r_l  = l  * n_r + ct; cur_l_l  = l  * n_l + ct;
+                cur_r_lw = lw * n_r + ct; cur_l_lw = lw * n_l + ct;
+                vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre + 1);
+                indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre + 2);
+                indices.push_back(idx_l_l);  indices.push_back(idx_pre + 2); indices.push_back(idx_pre + 3);
+                indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre + 2);
+                idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+            }
+            else if (line_join_style == LineJoin::Bevel) {
+                if (rotate > 0) {
+                    cur_r_l  = l  * n_r + ct; cur_l_l  = l  * SC_left + ct;
+                    cur_r_lw = lw * n_r + ct; cur_l_lw = lw * SC_left + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre + 1);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre + 2);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre + 2); indices.push_back(idx_pre + 3);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre + 2);
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                    cur_l_lw = lw * CE_left + ct;
+                    cur_l_l  = l  * CE_left + ct;
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_l_l+1);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_l_l+1);   indices.push_back(idx_l_l+2);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_l_lw+2);
+                    idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                }
+                else if (rotate < 0) {
+                    cur_r_l  = l  * SC_right + ct; cur_l_l  = l  * n_l + ct;
+                    cur_r_lw = lw * SC_right + ct; cur_l_lw = lw * n_l + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    vertices.push_back({ cur_l_lw, 1 }); vertices.push_back({ cur_l_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_pre);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_pre);     indices.push_back(idx_pre + 1);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_pre + 2);
+                    indices.push_back(idx_l_l);  indices.push_back(idx_pre + 2); indices.push_back(idx_pre + 3);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_pre);
+                    indices.push_back(idx_l_lw); indices.push_back(idx_pre);     indices.push_back(idx_pre + 2);
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++; idx_l_lw = idx_pre++; idx_l_l = idx_pre++;
+                    cur_r_lw = lw * CE_right + ct;
+                    cur_r_l  = l  * CE_right + ct;
+                    vertices.push_back({ cur_r_lw, 1 }); vertices.push_back({ cur_r_l, 0 });
+                    indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_l_l+1);
+                    indices.push_back(idx_r_l);  indices.push_back(idx_l_l+1);   indices.push_back(idx_l_l+2);
+                    indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_l_lw+2);
+                    idx_r_lw = idx_pre++; idx_r_l = idx_pre++;
+                }
+            }
+            indices.push_back(idx_r_lw); indices.push_back(idx_r_l);     indices.push_back(idx_st_r_lw);
+            indices.push_back(idx_r_l);  indices.push_back(idx_st_r_lw); indices.push_back(idx_st_r_l);
+            indices.push_back(idx_l_lw); indices.push_back(idx_l_l);     indices.push_back(idx_st_l_lw);
+            indices.push_back(idx_l_l);  indices.push_back(idx_st_l_lw); indices.push_back(idx_st_l_l);
+            indices.push_back(idx_r_lw); indices.push_back(idx_l_lw);    indices.push_back(idx_st_r_lw);
+            indices.push_back(idx_l_lw); indices.push_back(idx_st_r_lw); indices.push_back(idx_st_l_lw);
+        }
+        index_offset = (int)vertices.size();
     }
+    item.vertices = vertices;
+    item.indices = indices;
+    return;
 }
 }

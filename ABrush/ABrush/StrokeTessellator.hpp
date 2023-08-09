@@ -5,9 +5,11 @@
 #ifndef STROKETESSELLATOR_HPP
 #define STROKETESSELLATOR_HPP
 
+#include <cmath>
+#include <simd/simd.h>
+
 #include "Path.hpp"
 #include "Affine.hpp"
-#include <cmath>
 #include "RenderData.hpp"
 
 namespace ABrush
@@ -34,9 +36,16 @@ struct StrokeTessellator
     float line_width = 1.0;
     float miterlimit;
     
-    void stroke(Flatten *flattens, RenderData &data);
+    void stroke(Flatten *flattens, RenderDataItem &data);
     
 };
+
+simd_float2x2 getMatPerAngle(float segment, float angle);
+
+int getSegment(float radius, float angle);
+
+int getSegment(float radius, float angle, float tolerance);
+
 }
 
 #endif //ABRUSH_STROKETESSELLATOR_H
